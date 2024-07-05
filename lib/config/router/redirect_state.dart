@@ -1,0 +1,4 @@
+enum RedirectState {
+  pass,
+  temporary,
+}
