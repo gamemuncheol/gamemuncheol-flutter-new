@@ -45,3 +45,6 @@ app.*.map.json
 
 # 환경변수
 *.env
+
+# gif 용량이 커서 push 불가
+game_id.gif
