@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:gamemuncheol_upstream/feature/post/presentation/view/save_steps/step4_post_form/screen/post_form_screen.dart';
 import 'package:go_router/go_router.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -127,7 +128,7 @@ GoRouter goRouter(
       GoRoute(
         path: SearchMatchScreen.PATH,
         name: SearchMatchScreen.NAME,
-        builder: (context, state) => const SearchMatchScreen(),
+        builder: (context, state) => const VideoUploadScreen(),
         routes: [
           GoRoute(
             path: SelectStakeHolderScreen.PATH,
@@ -143,7 +144,11 @@ GoRouter goRouter(
           ),
         ],
       ),
-
+      GoRoute(
+        path: PostFormScreen.PATH,
+        name: PostFormScreen.NAME,
+        builder: (context, state) => const PostFormScreen(),
+      ),
       GoRoute(
         path: FullScreen.PATH,
         name: FullScreen.NAME,

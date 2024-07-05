@@ -19,8 +19,9 @@ class UploadVideoNotifier extends BaseNotifier<VideoUploadForm> {
   @override
   BaseState<VideoUploadForm> build() => Initial();
 
-  Future<void> uploadVideo() async {
-    notify(action: () => _postService.uploadVideo());
+  Future<bool> uploadVideo() async {
+    await notify(action: () => _postService.uploadVideo());
+    return state.hasValue;
   }
 
   Future<void> enterYoutubeUrl(String youtubeUrl) async {
