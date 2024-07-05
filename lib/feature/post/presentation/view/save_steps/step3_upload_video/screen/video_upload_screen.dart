@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:gamemuncheol_upstream/feature/post/presentation/view/save_steps/step4_post_form/screen/post_form_screen.dart';
+import 'package:gamemuncheol_upstream/feature/video/presentation/screen/video_permission_screen.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 
@@ -30,6 +32,7 @@ class VideoUploadScreen extends ConsumerStatefulWidget {
 
 class _VideoUploadScreenState extends ConsumerState<VideoUploadScreen>
     with VideoUploadScreenEvent {
+  @override
   final ValueNotifier<bool> fromGallery = ValueNotifier(true);
 
   @override
@@ -54,9 +57,7 @@ class _VideoUploadScreenState extends ConsumerState<VideoUploadScreen>
                   return Column(
                     children: [
                       IconButtonRounded(
-                        onTap: () {
-                          fromGallery.value = true;
-                        },
+                        onTap: uploadFromGallery,
                         selected: value,
                         label: "갤러리, 카메라 업로드",
                         iconPath:
@@ -64,9 +65,7 @@ class _VideoUploadScreenState extends ConsumerState<VideoUploadScreen>
                       ),
                       Gap(16.h),
                       IconButtonRounded(
-                        onTap: () {
-                          fromGallery.value = false;
-                        },
+                        onTap: uploadYoutubeUrl,
                         selected: !value,
                         label: "유튜브 url 업로드",
                         iconPath:
@@ -79,28 +78,25 @@ class _VideoUploadScreenState extends ConsumerState<VideoUploadScreen>
             ],
           ),
         ),
-        bottomButton: _buildNextBtn(),
+        bottomButton: Consumer(
+          builder: (context, ref, child) {
+            return PostSaveFormNextButton(
+              onTap: () async {
+                if (fromGallery.value) {
+                  await uploadVideo().then((isUploaded) {
+                    if (isUploaded) {
+                      context.push(PostFormScreen.PATH);
+                      return;
+                    }
+
+                    context.push(VideoPermissionScreen.NAME);
+                  });
+                }
+              },
+            );
+          },
+        ),
       ),
-    );
-  }
-
-  Widget _buildNextBtn() {
-    return Consumer(
-      builder: (context, ref, child) {
-        return PostSaveFormNextButton(onTap: () {
-          if (fromGallery.value) {
-            uploadVideo();
-          }
-          // context.pushNamed(SelectStakeHolderScreen.NAME);
-        });
-        // if (ref.watch(matchSaveFormNotifierProvider).me != null) {
-        //   return PostSaveFormNextBtn(onTap: () {
-        //     context.push(SelectStakeHolderScreen.PATH);
-        //   });
-        // }
-
-        // return PostSaveFormNextBtn.disAble();
-      },
     );
   }
 }

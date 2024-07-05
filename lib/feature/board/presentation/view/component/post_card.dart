@@ -1,7 +1,11 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:gamemuncheol_upstream/common/const/assets.dart';
 import 'package:gap/gap.dart';
+
+import 'dart:math' as math;
 
 import 'package:gamemuncheol_upstream/common/util/url_util.dart';
 import 'package:gamemuncheol_upstream/config/theme/extension/color_theme.dart';
@@ -45,6 +49,9 @@ class PostCard extends StatelessWidget {
                     : CustomYoutubPlayer(
                         post: post,
                       ),
+              ),
+              _VoteRatio(
+                post: post,
               ),
             ],
           ),
@@ -138,5 +145,120 @@ class _PostHeader extends StatelessWidget {
         ),
       ],
     );
+  }
+}
+
+class _VoteRatio extends StatelessWidget {
+  final Post post;
+  const _VoteRatio({required this.post});
+
+  @override
+  Widget build(BuildContext context) {
+    const Color end = Color(0xffD9D9D9);
+
+    return Row(
+      children: [
+        Expanded(
+          child: ClipPath(
+            clipper: _LightningClipperLeft(),
+            child: Container(
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [
+                    context.colors.primaryWhite,
+                    context.colors.primaryGreen,
+                  ],
+                ),
+              ),
+              width: MediaQuery.sizeOf(context).width,
+              height: 35,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  Text(
+                    post.voteRatio.first.ceil().toString(),
+                  ),
+                  const Gap(20)
+                ],
+              ),
+            ),
+          ),
+        ),
+        Expanded(
+          child: Transform(
+            alignment: Alignment.center,
+            transform: Matrix4.rotationY(math.pi),
+            child: ClipPath(
+              clipper: _LightningClipperRight(),
+              child: Container(
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: [
+                      context.colors.primaryWhite,
+                      context.colors.primaryBlue,
+                    ],
+                  ),
+                ),
+                width: MediaQuery.sizeOf(context).width,
+                height: 35,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    Transform(
+                      alignment: Alignment.center,
+                      transform: Matrix4.rotationY(math.pi),
+                      child: Text(
+                        post.voteRatio.last.ceil().toString(),
+                      ),
+                    ),
+                    const Gap(20)
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _LightningClipperLeft extends CustomClipper<Path> {
+  @override
+  Path getClip(Size size) {
+    Path path = Path();
+    path.lineTo(size.width, 0);
+    path.lineTo(size.width - 10, size.height * 0.7);
+    path.lineTo(size.width, size.height * 0.7);
+    path.lineTo(size.width - 5, size.height);
+    path.lineTo(0, size.height);
+
+    path.close();
+    return path;
+  }
+
+  @override
+  bool shouldReclip(CustomClipper<Path> oldClipper) {
+    return false;
+  }
+}
+
+class _LightningClipperRight extends CustomClipper<Path> {
+  @override
+  Path getClip(Size size) {
+    Path path = Path();
+    path.lineTo(size.width - 5, 0);
+    path.lineTo(size.width, size.height * 0.3);
+    path.lineTo(size.width - 10, size.height * 0.3);
+    path.lineTo(size.width, size.height);
+    path.lineTo(0, size.height);
+
+    path.close();
+    return path;
+  }
+
+  @override
+  bool shouldReclip(CustomClipper<Path> oldClipper) {
+    return false;
   }
 }
