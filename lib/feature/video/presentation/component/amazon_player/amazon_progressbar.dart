@@ -2,30 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
 
 class AmazonProgressBarColor {
-  final Color? back;
-  final Color? playedColor;
-  final Color? bufferedColor;
-  final Color? handle;
+  final Color handle;
 
   const AmazonProgressBarColor({
-    this.back,
-    this.playedColor,
-    this.bufferedColor,
-    this.handle,
+    required this.handle,
   });
-
-  AmazonProgressBarColor copyWith({
-    Color? back,
-    Color? playedColor,
-    Color? bufferedColor,
-    Color? handle,
-  }) =>
-      AmazonProgressBarColor(
-        back: back ?? this.back,
-        handle: handle ?? this.handle,
-        bufferedColor: bufferedColor ?? this.bufferedColor,
-        playedColor: playedColor ?? this.playedColor,
-      );
 }
 
 class AmazonProgressBar extends StatefulWidget {
@@ -39,9 +20,7 @@ class AmazonProgressBar extends StatefulWidget {
   });
 
   @override
-  ProgressBarState createState() {
-    return ProgressBarState();
-  }
+  ProgressBarState createState() => ProgressBarState();
 }
 
 class ProgressBarState extends State<AmazonProgressBar> {
@@ -76,6 +55,7 @@ class ProgressBarState extends State<AmazonProgressBar> {
               widget.controller.value.buffered.last.end.inMilliseconds /
                   totalDuration;
         });
+        // ignore: empty_catches
       } catch (e) {}
     }
   }
@@ -154,7 +134,7 @@ class _ProgressBarPainter extends CustomPainter {
   final double handleRadius;
   final double playedValue;
   final double bufferedValue;
-  final AmazonProgressBarColor? colors;
+  final AmazonProgressBarColor colors;
   final bool touchDown;
   final ThemeData themeData;
 
@@ -163,7 +143,7 @@ class _ProgressBarPainter extends CustomPainter {
     required this.handleRadius,
     required this.playedValue,
     required this.bufferedValue,
-    this.colors,
+    required this.colors,
     required this.touchDown,
     required this.themeData,
   });
@@ -196,15 +176,15 @@ class _ProgressBarPainter extends CustomPainter {
       centerY,
     );
 
-    final secondaryColor = themeData.colorScheme.secondary;
-
-    paint.color = colors?.back ?? secondaryColor.withOpacity(0.38);
+    paint.color = Colors.white;
     canvas.drawLine(startPoint, endPoint, paint);
 
-    paint.color = colors?.bufferedColor ?? Colors.white70;
+    canvas.drawLine(startPoint, progressPoint, paint);
+
     canvas.drawLine(startPoint, secondProgressPoint, paint);
 
-    paint.color = colors?.playedColor ?? secondaryColor;
+    // Played 부분의 색상
+    paint.color = colors.handle;
     canvas.drawLine(startPoint, progressPoint, paint);
 
     final handlePaint = Paint()..isAntiAlias = true;
@@ -212,7 +192,7 @@ class _ProgressBarPainter extends CustomPainter {
     handlePaint.color = Colors.transparent;
     canvas.drawCircle(progressPoint, centerY, handlePaint);
 
-    final handleColor = colors?.handle ?? secondaryColor;
+    final handleColor = colors.handle;
 
     if (touchDown) {
       handlePaint.color = handleColor.withOpacity(0.4);
