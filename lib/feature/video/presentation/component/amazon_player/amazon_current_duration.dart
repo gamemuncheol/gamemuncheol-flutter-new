@@ -38,7 +38,7 @@ class __AmazonCurrentPositionState extends State<AmazonCurrentDuration> {
       ),
       style: TextStyle(
         color: context.colors.primaryWhite,
-        fontSize: 12.0,
+        fontSize: 12,
       ),
     );
   }

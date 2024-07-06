@@ -25,7 +25,8 @@ class _CustomAmazonPlayerState extends State<CustomAmazonPlayer>
   late final VideoPlayerController videoPlayerController;
   late final AnimationController aniController;
 
-  bool hideComponent = false;
+  bool hideComponent = true;
+  bool hidePlayButton = false;
   bool isLandScapeMode = false;
 
   @override
@@ -36,7 +37,7 @@ class _CustomAmazonPlayerState extends State<CustomAmazonPlayer>
       duration: const Duration(
         milliseconds: 300,
       ),
-    );
+    )..addListener(playButtonVisibilityListener);
 
     videoPlayerController = VideoPlayerController.networkUrl(
       Uri.parse(
@@ -44,17 +45,14 @@ class _CustomAmazonPlayerState extends State<CustomAmazonPlayer>
       ),
     )
       ..addListener(playPauseListener)
-      ..initialize().then((_) {
-        if (context.mounted) {
-          setState(() {});
-        }
-      });
+      ..initialize();
   }
 
   @override
   void dispose() {
     videoPlayerController.removeListener(playPauseListener);
     videoPlayerController.dispose();
+    aniController.removeListener(playButtonVisibilityListener);
     aniController.dispose();
 
     SystemChrome.setPreferredOrientations([
@@ -71,6 +69,14 @@ class _CustomAmazonPlayerState extends State<CustomAmazonPlayer>
         : aniController.reverse();
   }
 
+  void playButtonVisibilityListener() {
+    if (aniController.isCompleted && hideComponent && context.mounted) {
+      setState(() {
+        hidePlayButton = true;
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -78,6 +84,9 @@ class _CustomAmazonPlayerState extends State<CustomAmazonPlayer>
         if (context.mounted) {
           setState(() {
             hideComponent = !hideComponent;
+            if (hideComponent == false) {
+              hidePlayButton = false;
+            }
           });
         }
       },
@@ -90,7 +99,7 @@ class _CustomAmazonPlayerState extends State<CustomAmazonPlayer>
               videoPlayerController,
             ),
             AnimatedOpacity(
-              opacity: hideComponent ? 0.7 : 0,
+              opacity: hideComponent ? 0 : 0.7,
               duration: const Duration(
                 milliseconds: 300,
               ),
@@ -98,91 +107,100 @@ class _CustomAmazonPlayerState extends State<CustomAmazonPlayer>
                 color: context.colors.black,
               ),
             ),
-            Align(
-              alignment: Alignment.center,
-              child: Material(
-                color: context.colors.transParent,
-                child: InkWell(
-                  borderRadius: BorderRadius.circular(
-                    50,
-                  ),
-                  onTap: () {
-                    videoPlayerController.value.isPlaying
-                        ? videoPlayerController.pause()
-                        : videoPlayerController.play();
-                  },
-                  child: AnimatedIcon(
-                    icon: AnimatedIcons.play_pause,
-                    progress: aniController.view,
-                    color: context.colors.primaryWhite,
-                    size: 60,
+            Visibility(
+              visible: !hidePlayButton,
+              child: Align(
+                alignment: Alignment.center,
+                child: Material(
+                  color: context.colors.transParent,
+                  child: InkWell(
+                    borderRadius: BorderRadius.circular(
+                      50,
+                    ),
+                    onTap: () {
+                      if (videoPlayerController.value.isInitialized) {
+                        videoPlayerController.value.isPlaying
+                            ? videoPlayerController.pause()
+                            : videoPlayerController.play();
+                      }
+                    },
+                    child: AnimatedIcon(
+                      icon: AnimatedIcons.play_pause,
+                      progress: aniController.view,
+                      color: context.colors.primaryWhite,
+                      size: 60.w,
+                    ),
                   ),
                 ),
               ),
             ),
-            Visibility(
-              visible: !hideComponent,
-              child: Align(
-                alignment: Alignment.bottomLeft,
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 5,
-                  ),
-                  child: Row(
-                    children: [
-                      AmazonCurrentDuration(
-                        controller: videoPlayerController,
-                      ),
-                      Gap(5.w),
-                      Expanded(
-                        child: AmazonProgressBar(
+            Align(
+              alignment: Alignment.bottomLeft,
+              child: Padding(
+                padding: const EdgeInsets.only(
+                  left: 5,
+                  right: 5,
+                  bottom: 5,
+                ),
+                child: IgnorePointer(
+                  ignoring: hideComponent,
+                  child: AnimatedOpacity(
+                    opacity: hideComponent ? 0 : 1,
+                    duration: const Duration(milliseconds: 300),
+                    child: Row(
+                      children: [
+                        AmazonCurrentDuration(
                           controller: videoPlayerController,
-                          colors: AmazonProgressBarColor(
-                            back: context.colors.primaryWhite,
-                            handle: context.colors.primaryGreen,
+                        ),
+                        Gap(5.w),
+                        Expanded(
+                          child: AmazonProgressBar(
+                            controller: videoPlayerController,
+                            colors: AmazonProgressBarColor(
+                              handle: context.colors.primaryGreen,
+                            ),
                           ),
                         ),
-                      ),
-                      AmazonRemainingDuration(
-                        controller: videoPlayerController,
-                      ),
-                      IconButton(
-                        icon: Icon(
-                          Icons.fullscreen,
-                          color: context.colors.primaryWhite,
+                        AmazonRemainingDuration(
+                          controller: videoPlayerController,
                         ),
-                        onPressed: () {
-                 
-                          if (GoRouterState.of(context).matchedLocation ==
-                              FullScreen.PATH) {
-                            if (isLandScapeMode) {
-                              isLandScapeMode = false;
-                              SystemChrome.setPreferredOrientations([
-                                DeviceOrientation.portraitUp,
-                                DeviceOrientation.portraitDown,
-                              ]);
-                            } else {
-                              isLandScapeMode = true;
-                              SystemChrome.setPreferredOrientations([
-                                DeviceOrientation.landscapeRight,
-                                DeviceOrientation.landscapeLeft,
-                              ]);
+                        IconButton(
+                          icon: Icon(
+                            Icons.fullscreen,
+                            color: context.colors.primaryWhite,
+                          ),
+                          onPressed: () {
+                            if (GoRouterState.of(context).matchedLocation ==
+                                FullScreen.PATH) {
+                              if (isLandScapeMode) {
+                                isLandScapeMode = false;
+                                SystemChrome.setPreferredOrientations([
+                                  DeviceOrientation.portraitUp,
+                                  DeviceOrientation.portraitDown,
+                                ]);
+                              } else {
+                                isLandScapeMode = true;
+                                SystemChrome.setPreferredOrientations([
+                                  DeviceOrientation.landscapeRight,
+                                  DeviceOrientation.landscapeLeft,
+                                ]);
+                              }
+
+                              return;
                             }
 
-                            return;
-                          }
-
-                          context.push(
-                            FullScreen.PATH,
-                            extra: widget.post,
-                          );
-                        },
-                      ),
-                    ],
+                            context.push(
+                              FullScreen.PATH,
+                              extra: widget.post,
+                            );
+                          },
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ),
-            )
+            ),
           ],
         ),
       ),

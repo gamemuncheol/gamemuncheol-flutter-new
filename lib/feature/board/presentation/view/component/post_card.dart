@@ -1,18 +1,17 @@
-import 'package:cached_network_image/cached_network_image.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:gamemuncheol_upstream/common/const/assets.dart';
-import 'package:gap/gap.dart';
-
 import 'dart:math' as math;
 
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:gap/gap.dart';
+
+import 'package:gamemuncheol_upstream/common/const/assets.dart';
 import 'package:gamemuncheol_upstream/common/util/url_util.dart';
 import 'package:gamemuncheol_upstream/config/theme/extension/color_theme.dart';
 import 'package:gamemuncheol_upstream/config/theme/extension/text_style_theme.dart';
+import 'package:gamemuncheol_upstream/feature/post/model/post.dart';
 import 'package:gamemuncheol_upstream/feature/video/presentation/component/amazon_player/custom_amazon_player.dart';
 import 'package:gamemuncheol_upstream/feature/video/presentation/component/custom_youtube_player.dart';
-import 'package:gamemuncheol_upstream/feature/post/model/post.dart';
 
 class PostCard extends StatelessWidget {
   final Post post;
@@ -22,44 +21,43 @@ class PostCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return SizedBox(
       width: double.infinity,
-      child: Stack(
+      child: Column(
         children: [
-          Column(
+          Row(
             children: [
-              Padding(
-                padding: const EdgeInsets.only(
-                  left: 75,
-                  right: 15,
-                ),
+              Gap(15.w),
+              _ProfileImage(
+                feed: post,
+              ),
+              Gap(15.w),
+              Expanded(
                 child: _PostHeader(
-                  feed: post,
+                  post: post,
                 ),
               ),
-              Padding(
-                padding: const EdgeInsets.only(
-                  top: 10,
-                ),
-                child: UrlUtil.urlToYoutubeId(
-                          post.videoUrl,
-                        ) ==
-                        null
-                    ? CustomAmazonPlayer(
-                        post: post,
-                      )
-                    : CustomYoutubPlayer(
-                        post: post,
-                      ),
-              ),
-              _VoteRatio(
-                post: post,
-              ),
+              Gap(15.w),
             ],
           ),
-          Positioned(
-            left: 15,
-            width: 50,
-            child: _ProfileImage(
-              feed: post,
+          UrlUtil.urlToYoutubeId(
+                    post.videoUrl,
+                  ) ==
+                  null
+              ? CustomAmazonPlayer(
+                  post: post,
+                )
+              : CustomYoutubPlayer(
+                  post: post,
+                ),
+          _VoteRatio(
+            post: post,
+          ),
+          Gap(10.h),
+          Padding(
+            padding: EdgeInsets.symmetric(
+              horizontal: 15.w,
+            ),
+            child: _Content(
+              post: post,
             ),
           ),
         ],
@@ -75,8 +73,10 @@ class _ProfileImage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(5),
-      height: 55,
+      padding: EdgeInsets.all(
+        2.5.w,
+      ),
+      height: 50.h,
       decoration: BoxDecoration(
         shape: BoxShape.circle,
         gradient: LinearGradient(
@@ -89,7 +89,9 @@ class _ProfileImage extends StatelessWidget {
         ),
       ),
       child: ClipRRect(
-        borderRadius: BorderRadius.circular(200),
+        borderRadius: BorderRadius.circular(
+          200,
+        ),
         child: CachedNetworkImage(
           imageUrl: feed.member.picture,
         ),
@@ -99,13 +101,12 @@ class _ProfileImage extends StatelessWidget {
 }
 
 class _PostHeader extends StatelessWidget {
-  final Post feed;
-  const _PostHeader({required this.feed});
+  final Post post;
+  const _PostHeader({required this.post});
 
   @override
   Widget build(BuildContext context) {
-    // final viewCountInfo = "조회수 ${feed.viewCount.toString()}회";
-    // final String createdAt = TimeFormatter.calDiffer(feed.createdAt);
+    final viewCountInfo = "조회수 ${post.viewCount.toString()}회";
 
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -114,7 +115,7 @@ class _PostHeader extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              feed.member.nickname,
+              post.member.nickname,
               style: context.textStyles.body5M,
             ),
             Gap(10.h),
@@ -124,15 +125,12 @@ class _PostHeader extends StatelessWidget {
                   TextSpan(
                     style: context.textStyles.cap1,
                     children: [
-                      // TextSpan(
-                      //   text: viewCountInfo,
-                      // ),
-                      // const TextSpan(
-                      //   text: "  ·  ",
-                      // ),
-                      // TextSpan(
-                      //   text: createdAt,
-                      // ),
+                      TextSpan(
+                        text: viewCountInfo,
+                      ),
+                      const TextSpan(
+                        text: "  ·  ",
+                      ),
                     ],
                   ),
                 ),
@@ -154,8 +152,6 @@ class _VoteRatio extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const Color end = Color(0xffD9D9D9);
-
     return Row(
       children: [
         Expanded(
@@ -167,22 +163,29 @@ class _VoteRatio extends StatelessWidget {
                   colors: [
                     context.colors.primaryWhite,
                     context.colors.primaryGreen,
+                    context.colors.primaryGreen,
                   ],
                 ),
               ),
               width: MediaQuery.sizeOf(context).width,
-              height: 35,
+              height: 35.h,
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   Text(
-                    post.voteRatio.first.ceil().toString(),
+                    "${post.voteRatio.first.ceil()}%",
+                    style: context.textStyles.body2M
+                        .copyWith(color: context.colors.onPrimaryGreen),
                   ),
-                  const Gap(20)
+                  Gap(20.w)
                 ],
               ),
             ),
           ),
+        ),
+        Image.asset(
+          width: 20.w,
+          AppAsset.VS_ICON,
         ),
         Expanded(
           child: Transform(
@@ -196,11 +199,12 @@ class _VoteRatio extends StatelessWidget {
                     colors: [
                       context.colors.primaryWhite,
                       context.colors.primaryBlue,
+                      context.colors.primaryBlue,
                     ],
                   ),
                 ),
                 width: MediaQuery.sizeOf(context).width,
-                height: 35,
+                height: 35.h,
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
@@ -208,10 +212,12 @@ class _VoteRatio extends StatelessWidget {
                       alignment: Alignment.center,
                       transform: Matrix4.rotationY(math.pi),
                       child: Text(
-                        post.voteRatio.last.ceil().toString(),
+                        "${post.voteRatio.last.ceil()}%",
+                        style: context.textStyles.body2M
+                            .copyWith(color: context.colors.onPrimaryBlue),
                       ),
                     ),
-                    const Gap(20)
+                    Gap(20.w)
                   ],
                 ),
               ),
@@ -260,5 +266,19 @@ class _LightningClipperRight extends CustomClipper<Path> {
   @override
   bool shouldReclip(CustomClipper<Path> oldClipper) {
     return false;
+  }
+}
+
+class _Content extends StatelessWidget {
+  final Post post;
+  const _Content({required this.post});
+
+  @override
+  Widget build(BuildContext context) {
+    return Text(
+      post.content ??
+          "dsadasasdadsasdsadsdasadadsdasdassdadsasdadsadasasdsdasaddsadsadasasdadsasdsadsdasadadsdasdassdadsasdadsadasasdsdasaddsadsadasasdadsasdsadsdasadadsdasdassdadsasdadsadasasdsdasaddsa",
+      maxLines: 2,
+    );
   }
 }
