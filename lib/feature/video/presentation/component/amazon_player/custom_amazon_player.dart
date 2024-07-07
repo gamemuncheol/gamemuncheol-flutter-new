@@ -1,6 +1,8 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:gamemuncheol_upstream/core/resource/extra.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 import 'package:video_player/video_player.dart';
@@ -9,12 +11,17 @@ import 'package:gamemuncheol_upstream/config/theme/extension/color_theme.dart';
 import 'package:gamemuncheol_upstream/feature/video/presentation/component/amazon_player/amazon_current_duration.dart';
 import 'package:gamemuncheol_upstream/feature/video/presentation/component/amazon_player/amazon_progressbar.dart';
 import 'package:gamemuncheol_upstream/feature/video/presentation/component/amazon_player/amazon_remaining_duration.dart';
-import 'package:gamemuncheol_upstream/feature/post/model/post.dart';
 import 'package:gamemuncheol_upstream/feature/video/presentation/screen/full_screen.dart';
 
 class CustomAmazonPlayer extends StatefulWidget {
-  final Post post;
-  const CustomAmazonPlayer({super.key, required this.post});
+  final VideoPlayerController videoPlayerController;
+  final String thumbnailUrl;
+
+  const CustomAmazonPlayer({
+    super.key,
+    required this.videoPlayerController,
+    required this.thumbnailUrl,
+  });
 
   @override
   State<CustomAmazonPlayer> createState() => _CustomAmazonPlayerState();
@@ -22,12 +29,11 @@ class CustomAmazonPlayer extends StatefulWidget {
 
 class _CustomAmazonPlayerState extends State<CustomAmazonPlayer>
     with SingleTickerProviderStateMixin {
-  late final VideoPlayerController videoPlayerController;
   late final AnimationController aniController;
 
-  bool hideComponent = true;
+  bool hideThumbnail = false;
+  bool hideProgress = true;
   bool hidePlayButton = false;
-  bool isLandScapeMode = false;
 
   @override
   void initState() {
@@ -39,19 +45,21 @@ class _CustomAmazonPlayerState extends State<CustomAmazonPlayer>
       ),
     )..addListener(playButtonVisibilityListener);
 
-    videoPlayerController = VideoPlayerController.networkUrl(
-      Uri.parse(
-        "https://www.tcpschool.com/lectures/sample_video_mp4.mp4",
-      ),
-    )
+    if (widget.videoPlayerController.value.isInitialized) {
+      widget.videoPlayerController.addListener(playPauseListener);
+      return;
+    }
+
+    widget.videoPlayerController
       ..addListener(playPauseListener)
-      ..initialize();
+      ..initialize().then((_) {
+        setState(() {});
+      });
   }
 
   @override
   void dispose() {
-    videoPlayerController.removeListener(playPauseListener);
-    videoPlayerController.dispose();
+    widget.videoPlayerController.removeListener(playPauseListener);
     aniController.removeListener(playButtonVisibilityListener);
     aniController.dispose();
 
@@ -64,13 +72,13 @@ class _CustomAmazonPlayerState extends State<CustomAmazonPlayer>
   }
 
   void playPauseListener() {
-    videoPlayerController.value.isPlaying
+    widget.videoPlayerController.value.isPlaying
         ? aniController.forward()
         : aniController.reverse();
   }
 
   void playButtonVisibilityListener() {
-    if (aniController.isCompleted && hideComponent && context.mounted) {
+    if (aniController.isCompleted && hideProgress && context.mounted) {
       setState(() {
         hidePlayButton = true;
       });
@@ -79,12 +87,15 @@ class _CustomAmazonPlayerState extends State<CustomAmazonPlayer>
 
   @override
   Widget build(BuildContext context) {
+    bool isLandScapeMode =
+        MediaQuery.of(context).orientation != Orientation.portrait;
+
     return GestureDetector(
       onTap: () {
         if (context.mounted) {
           setState(() {
-            hideComponent = !hideComponent;
-            if (hideComponent == false) {
+            hideProgress = !hideProgress;
+            if (hideProgress == false) {
               hidePlayButton = false;
             }
           });
@@ -96,10 +107,18 @@ class _CustomAmazonPlayerState extends State<CustomAmazonPlayer>
         child: Stack(
           children: [
             VideoPlayer(
-              videoPlayerController,
+              widget.videoPlayerController,
+            ),
+            Visibility(
+              visible: !hideThumbnail,
+              child: CachedNetworkImage(
+                width: MediaQuery.sizeOf(context).width,
+                fit: isLandScapeMode ? BoxFit.fill : null,
+                imageUrl: widget.thumbnailUrl,
+              ),
             ),
             AnimatedOpacity(
-              opacity: hideComponent ? 0 : 0.7,
+              opacity: hideProgress ? 0 : 0.7,
               duration: const Duration(
                 milliseconds: 300,
               ),
@@ -118,17 +137,23 @@ class _CustomAmazonPlayerState extends State<CustomAmazonPlayer>
                       50,
                     ),
                     onTap: () {
-                      if (videoPlayerController.value.isInitialized) {
-                        videoPlayerController.value.isPlaying
-                            ? videoPlayerController.pause()
-                            : videoPlayerController.play();
+                      if (widget.videoPlayerController.value.isInitialized) {
+                        if (!hideThumbnail) {
+                          setState(() {
+                            hideThumbnail = true;
+                          });
+                        }
+
+                        widget.videoPlayerController.value.isPlaying
+                            ? widget.videoPlayerController.pause()
+                            : widget.videoPlayerController.play();
                       }
                     },
                     child: AnimatedIcon(
                       icon: AnimatedIcons.play_pause,
                       progress: aniController.view,
                       color: context.colors.primaryWhite,
-                      size: 60.w,
+                      size: isLandScapeMode ? 30.w : 60.w,
                     ),
                   ),
                 ),
@@ -143,43 +168,41 @@ class _CustomAmazonPlayerState extends State<CustomAmazonPlayer>
                   bottom: 5,
                 ),
                 child: IgnorePointer(
-                  ignoring: hideComponent,
+                  ignoring: hideProgress,
                   child: AnimatedOpacity(
-                    opacity: hideComponent ? 0 : 1,
+                    opacity: hideProgress ? 0 : 1,
                     duration: const Duration(milliseconds: 300),
                     child: Row(
                       children: [
                         AmazonCurrentDuration(
-                          controller: videoPlayerController,
+                          controller: widget.videoPlayerController,
                         ),
                         Gap(5.w),
                         Expanded(
                           child: AmazonProgressBar(
-                            controller: videoPlayerController,
+                            controller: widget.videoPlayerController,
                             colors: AmazonProgressBarColor(
                               handle: context.colors.primaryGreen,
                             ),
                           ),
                         ),
                         AmazonRemainingDuration(
-                          controller: videoPlayerController,
+                          controller: widget.videoPlayerController,
                         ),
                         IconButton(
                           icon: Icon(
                             Icons.fullscreen,
                             color: context.colors.primaryWhite,
                           ),
-                          onPressed: () {
+                          onPressed: () async {
                             if (GoRouterState.of(context).matchedLocation ==
                                 FullScreen.PATH) {
                               if (isLandScapeMode) {
-                                isLandScapeMode = false;
                                 SystemChrome.setPreferredOrientations([
                                   DeviceOrientation.portraitUp,
                                   DeviceOrientation.portraitDown,
                                 ]);
                               } else {
-                                isLandScapeMode = true;
                                 SystemChrome.setPreferredOrientations([
                                   DeviceOrientation.landscapeRight,
                                   DeviceOrientation.landscapeLeft,
@@ -189,10 +212,18 @@ class _CustomAmazonPlayerState extends State<CustomAmazonPlayer>
                               return;
                             }
 
-                            context.push(
-                              FullScreen.PATH,
-                              extra: widget.post,
-                            );
+                            await widget.videoPlayerController
+                                .pause()
+                                .whenComplete(
+                                  () => context.push(
+                                    FullScreen.PATH,
+                                    extra: Extra({
+                                      "videoPlayerController":
+                                          widget.videoPlayerController,
+                                      "thumbnailUrl": widget.thumbnailUrl,
+                                    }),
+                                  ),
+                                );
                           },
                         ),
                       ],

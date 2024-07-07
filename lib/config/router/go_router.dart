@@ -14,7 +14,6 @@ import 'package:gamemuncheol_upstream/core/app/walk_through/presentation/view/sc
 import 'package:gamemuncheol_upstream/core/app/walk_through/presentation/view/screen/splash/splash_screen.dart';
 import 'package:gamemuncheol_upstream/core/resource/extra.dart';
 import 'package:gamemuncheol_upstream/feature/member/presentation/view/nickname/screen/register_nickname_screen.dart';
-import 'package:gamemuncheol_upstream/feature/post/model/post.dart';
 import 'package:gamemuncheol_upstream/feature/post/presentation/view/save_steps/step1_register_match/screen/search_match_screen.dart';
 import 'package:gamemuncheol_upstream/feature/post/presentation/view/save_steps/step2_select_stakeholder/screen/select_stakeholder_screen.dart';
 import 'package:gamemuncheol_upstream/feature/video/presentation/screen/video_permission_screen.dart';
@@ -154,7 +153,9 @@ GoRouter goRouter(
         name: FullScreen.NAME,
         builder: (context, state) {
           return FullScreen(
-            post: state.extra as Post,
+            videoPlayerController:
+                (state.extra as Extra).data["videoPlayerController"],
+            thumbnailUrl: (state.extra as Extra).data["thumbnailUrl"],
           );
         },
       ),
