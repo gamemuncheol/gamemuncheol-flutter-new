@@ -11,7 +11,7 @@ abstract class DioInterCeptors {
   @lazySingleton
   PrettyDioLogger get logInterceptor {
     return PrettyDioLogger(
-        requestBody: true, requestHeader: true, responseBody: true);
+        requestBody: false, requestHeader: false, responseBody: false);
   }
 
   @lazySingleton

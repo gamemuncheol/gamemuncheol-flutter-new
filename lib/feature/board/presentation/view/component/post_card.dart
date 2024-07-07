@@ -11,11 +11,52 @@ import 'package:gamemuncheol_upstream/config/theme/extension/color_theme.dart';
 import 'package:gamemuncheol_upstream/config/theme/extension/text_style_theme.dart';
 import 'package:gamemuncheol_upstream/feature/post/model/post.dart';
 import 'package:gamemuncheol_upstream/feature/video/presentation/component/amazon_player/custom_amazon_player.dart';
-import 'package:gamemuncheol_upstream/feature/video/presentation/component/custom_youtube_player.dart';
+import 'package:video_player/video_player.dart';
+import 'package:youtube_explode_dart/youtube_explode_dart.dart';
 
-class PostCard extends StatelessWidget {
+class PostCard extends StatefulWidget {
   final Post post;
   const PostCard({super.key, required this.post});
+
+  @override
+  State<PostCard> createState() => _PostCardState();
+}
+
+class _PostCardState extends State<PostCard> {
+  VideoPlayerController? videoPlayerController;
+
+  @override
+  void dispose() {
+    videoPlayerController?.dispose();
+    super.dispose();
+  }
+
+  Future<VideoPlayerController> setVideoController() async {
+    if (videoPlayerController != null) {
+      return videoPlayerController!;
+    }
+
+    if (UrlUtil.urlToYoutubeId(widget.post.videoUrl) == null) {
+      videoPlayerController = VideoPlayerController.networkUrl(
+        Uri.parse(
+          "https://www.tcpschool.com/lectures/sample_video_mp4.mp4",
+        ),
+      );
+
+      return videoPlayerController!;
+    } else {
+      var manifest = await YoutubeExplode()
+          .videos
+          .streamsClient
+          .getManifest(UrlUtil.urlToYoutubeId(widget.post.videoUrl));
+
+      videoPlayerController = VideoPlayerController.networkUrl(
+        manifest.muxed.withHighestBitrate().url,
+      );
+
+      return videoPlayerController!;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -27,29 +68,36 @@ class PostCard extends StatelessWidget {
             children: [
               Gap(15.w),
               _ProfileImage(
-                feed: post,
+                feed: widget.post,
               ),
               Gap(15.w),
               Expanded(
                 child: _PostHeader(
-                  post: post,
+                  post: widget.post,
                 ),
               ),
               Gap(15.w),
             ],
           ),
-          UrlUtil.urlToYoutubeId(
-                    post.videoUrl,
-                  ) ==
-                  null
-              ? CustomAmazonPlayer(
-                  post: post,
-                )
-              : CustomYoutubPlayer(
-                  post: post,
-                ),
+          Gap(10.h),
+          FutureBuilder(
+              future: setVideoController(),
+              builder: (context, snapshot) {
+                if (snapshot.hasData) {
+                  return CustomAmazonPlayer(
+                    videoPlayerController: snapshot.data!,
+                    thumbnailUrl: widget.post.thumbnailUrl,
+                  );
+                }
+
+                return Image.asset(
+                  width: MediaQuery.sizeOf(context).width,
+                  height: MediaQuery.sizeOf(context).width * 9 / 16,
+                  AppAsset.ZZOL_PLACEHOLDER,
+                );
+              }),
           _VoteRatio(
-            post: post,
+            post: widget.post,
           ),
           Gap(10.h),
           Padding(
@@ -57,7 +105,7 @@ class PostCard extends StatelessWidget {
               horizontal: 15.w,
             ),
             child: _Content(
-              post: post,
+              post: widget.post,
             ),
           ),
         ],

@@ -34,25 +34,18 @@ class PostSaveFormAppBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const double elevation = 0;
     const int totalStep = 5;
 
-    final double leadingWidth = 44.w;
-    final leadingPadding = EdgeInsets.only(left: 16.w);
-
-    final actionPadding = EdgeInsets.only(right: 16.w);
-
-    final TextStyle stepStyle =
-        context.textStyles.body3R.copyWith(color: context.colors.natural04);
-
     return AppBar(
-      elevation: elevation,
+      elevation: 0,
       backgroundColor: context.colors.background,
-      leadingWidth: leadingWidth,
+      leadingWidth: 45.w,
       leading: GestureDetector(
         onTap: onLeadingTap,
         child: Padding(
-          padding: leadingPadding,
+          padding: EdgeInsets.only(
+            left: 15.w,
+          ),
           child: SvgPicture.asset(
             AppAsset.CHEVRON_LEFT_BLACK,
           ),
@@ -61,12 +54,16 @@ class PostSaveFormAppBar extends StatelessWidget {
       actions: [
         Center(
           child: Padding(
-            padding: actionPadding,
+            padding: EdgeInsets.only(
+              right: 15.w,
+            ),
             child: Row(
               children: [
                 Text(
                   "$currentStep/$totalStep",
-                  style: stepStyle,
+                  style: context.textStyles.body3R.copyWith(
+                    color: context.colors.natural04,
+                  ),
                 ),
               ],
             ),

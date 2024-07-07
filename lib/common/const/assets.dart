@@ -80,4 +80,5 @@ class AppAsset {
   static const SEARCH_ICON_PATH = "$COMMU_PATH/search_icon.svg";
 
   static const VS_ICON = "$COMMU_PATH/icon_vs01.png";
+  static const ZZOL_PLACEHOLDER = "$COMMU_PATH/zzol_placeholder.png";
 }
