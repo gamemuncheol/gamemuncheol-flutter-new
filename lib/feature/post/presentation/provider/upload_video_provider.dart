@@ -24,7 +24,25 @@ class UploadVideoNotifier extends BaseNotifier<VideoUploadForm> {
     return state.hasValue;
   }
 
-  Future<void> enterYoutubeUrl(String youtubeUrl) async {
-    notify(action: () => _postService.enterYoutubeUrl(youtubeUrl));
+  Future<void> uploadYoutubeUrl(String youtubeUrl) async {
+    await notify(action: () => _postService.enterYoutubeUrl(youtubeUrl));
+  }
+
+  Future<void> changeThumbnail() async {
+    (await _postService.changeThumbImage()).when(
+      success: (thumbnail) {
+        state = Value(
+          valueOrNull: state.value.copyWith(
+            thumbnail: thumbnail,
+          ),
+        );
+      },
+      failure: (exc) {
+        state = Error(
+          error: exc,
+          cache: state.valueOrNull,
+        );
+      },
+    );
   }
 }

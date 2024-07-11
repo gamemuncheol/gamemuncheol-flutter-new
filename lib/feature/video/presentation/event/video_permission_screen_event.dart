@@ -9,7 +9,11 @@ import 'package:permission_handler/permission_handler.dart';
 mixin VideoPermissionScreenEvent on State<VideoPermissionScreen> {
   ValueNotifier<bool> get hasPermission;
 
-  void request() {
+  void onCloseIconTap() {
+    context.pop(false);
+  }
+
+  void requestVideoPermission() {
     PermissionHandlerService.request(
       Permission.photos,
       onDeniedCallback: () {
@@ -19,7 +23,7 @@ mixin VideoPermissionScreenEvent on State<VideoPermissionScreen> {
       },
       onGrantedCallback: () {
         hasPermission.value = true;
-        context.pop();
+        context.pop(true);
       },
     );
   }

@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:gamemuncheol_upstream/feature/post/presentation/view/save_steps/step4_post_form/screen/post_form_screen.dart';
-import 'package:gamemuncheol_upstream/feature/video/presentation/screen/video_permission_screen.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:gap/gap.dart';
-import 'package:go_router/go_router.dart';
 
 import 'package:gamemuncheol_upstream/common/component/icon_button_rounded.dart';
 import 'package:gamemuncheol_upstream/common/const/assets.dart';
@@ -37,11 +35,17 @@ class _VideoUploadScreenState extends ConsumerState<VideoUploadScreen>
 
   @override
   Widget build(BuildContext context) {
+    ref.listen(uploadVideoNotifierProvider, (pre, next) {
+      if (next.isError && next.error.message.isNotEmpty) {
+        Fluttertoast.showToast(msg: next.error.message);
+      }
+    });
+
     return BlurLayout<BaseState<VideoUploadForm>>(
       provider: uploadVideoNotifierProvider,
       scaffold: BottomButtonExpanded(
         appBar: PostSaveFormAppBar.step3(
-          onLeadingTap: context.pop,
+          onLeadingTap: onLeadingTap,
         ).toPrefferedSize(),
         expanded: PostSaveFormPadding(
           child: Column(
@@ -65,7 +69,7 @@ class _VideoUploadScreenState extends ConsumerState<VideoUploadScreen>
                       ),
                       Gap(16.h),
                       IconButtonRounded(
-                        onTap: uploadYoutubeUrl,
+                        onTap: uploadFromYoutubeUrl,
                         selected: !value,
                         label: "유튜브 url 업로드",
                         iconPath:
@@ -78,22 +82,13 @@ class _VideoUploadScreenState extends ConsumerState<VideoUploadScreen>
             ],
           ),
         ),
-        bottomButton: Consumer(
-          builder: (context, ref, child) {
-            return PostSaveFormNextButton(
-              onTap: () async {
-                if (fromGallery.value) {
-                  await uploadVideo().then((isUploaded) {
-                    if (isUploaded) {
-                      context.push(PostFormScreen.PATH);
-                      return;
-                    }
-
-                    context.push(VideoPermissionScreen.NAME);
-                  });
-                }
-              },
-            );
+        bottomButton: PostSaveFormNextButton(
+          onTap: () {
+            if (fromGallery.value) {
+              uploadVideo();
+            } else {
+              uploadYoutubeUrl();
+            }
           },
         ),
       ),

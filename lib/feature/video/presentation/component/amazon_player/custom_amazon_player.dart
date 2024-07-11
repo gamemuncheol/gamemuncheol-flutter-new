@@ -1,13 +1,13 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:gamemuncheol_upstream/core/resource/extra.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 import 'package:video_player/video_player.dart';
 
 import 'package:gamemuncheol_upstream/config/theme/extension/color_theme.dart';
+import 'package:gamemuncheol_upstream/core/resource/extra.dart';
+import 'package:gamemuncheol_upstream/feature/video/presentation/component/thumbnail.dart';
 import 'package:gamemuncheol_upstream/feature/video/presentation/component/amazon_player/amazon_current_duration.dart';
 import 'package:gamemuncheol_upstream/feature/video/presentation/component/amazon_player/amazon_progressbar.dart';
 import 'package:gamemuncheol_upstream/feature/video/presentation/component/amazon_player/amazon_remaining_duration.dart';
@@ -15,12 +15,14 @@ import 'package:gamemuncheol_upstream/feature/video/presentation/screen/full_scr
 
 class CustomAmazonPlayer extends StatefulWidget {
   final VideoPlayerController videoPlayerController;
-  final String thumbnailUrl;
+  final String? thumbnailUrl;
+  final Uint8List? thumbnailByte;
 
   const CustomAmazonPlayer({
     super.key,
     required this.videoPlayerController,
-    required this.thumbnailUrl,
+    this.thumbnailUrl,
+    this.thumbnailByte,
   });
 
   @override
@@ -111,10 +113,9 @@ class _CustomAmazonPlayerState extends State<CustomAmazonPlayer>
             ),
             Visibility(
               visible: !hideThumbnail,
-              child: CachedNetworkImage(
-                width: MediaQuery.sizeOf(context).width,
-                fit: isLandScapeMode ? BoxFit.fill : null,
-                imageUrl: widget.thumbnailUrl,
+              child: Thumbnail(
+                thumbnailUrl: widget.thumbnailUrl,
+                thumbnailByte: widget.thumbnailByte,
               ),
             ),
             AnimatedOpacity(
@@ -221,6 +222,7 @@ class _CustomAmazonPlayerState extends State<CustomAmazonPlayer>
                                       "videoPlayerController":
                                           widget.videoPlayerController,
                                       "thumbnailUrl": widget.thumbnailUrl,
+                                      "thumbnailByte": widget.thumbnailByte,
                                     }),
                                   ),
                                 );

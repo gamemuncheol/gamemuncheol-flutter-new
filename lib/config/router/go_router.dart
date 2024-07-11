@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:gamemuncheol_upstream/feature/post/presentation/view/save_steps/step3_upload_video/screen/thumbnail_setting_screen.dart';
+import 'package:gamemuncheol_upstream/feature/post/presentation/view/save_steps/step3_upload_video/screen/youtube_url_upload_screen.dart';
 import 'package:gamemuncheol_upstream/feature/post/presentation/view/save_steps/step4_post_form/screen/post_form_screen.dart';
 import 'package:go_router/go_router.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -124,6 +126,7 @@ GoRouter goRouter(
         name: VideoPermissionScreen.NAME,
         builder: (context, state) => const VideoPermissionScreen(),
       ),
+
       GoRoute(
         path: SearchMatchScreen.PATH,
         name: SearchMatchScreen.NAME,
@@ -139,6 +142,11 @@ GoRouter goRouter(
                 name: VideoUploadScreen.NAME,
                 builder: (context, state) => const VideoUploadScreen(),
               ),
+              GoRoute(
+                path: YoutubeUrlUploadScreen.PATH,
+                name: YoutubeUrlUploadScreen.NAME,
+                builder: (context, state) => const YoutubeUrlUploadScreen(),
+              ),
             ],
           ),
         ],
@@ -149,13 +157,21 @@ GoRouter goRouter(
         builder: (context, state) => const PostFormScreen(),
       ),
       GoRoute(
+        path: ThumbnailSettingScreen.PATH,
+        name: ThumbnailSettingScreen.NAME,
+        builder: (context, state) => ThumbnailSettingScreen(
+          hasPermission: state.extra as bool,
+        ),
+      ),
+      GoRoute(
         path: FullScreen.PATH,
         name: FullScreen.NAME,
         builder: (context, state) {
+          final extra = state.extra as Extra;
           return FullScreen(
-            videoPlayerController:
-                (state.extra as Extra).data["videoPlayerController"],
-            thumbnailUrl: (state.extra as Extra).data["thumbnailUrl"],
+            videoPlayerController: extra.data["videoPlayerController"],
+            thumbnailUrl: extra.data["thumbnailUrl"],
+            thumbnailByte: extra.data["thumbnailByte"],
           );
         },
       ),
