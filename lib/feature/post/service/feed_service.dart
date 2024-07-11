@@ -20,13 +20,13 @@ import 'package:gamemuncheol_upstream/feature/post/model/form/video_upload_form.
 
 @lazySingleton
 class PostService {
-  final FeedRepository _feedApi;
+  final FeedRepository _postRepository;
   final ImagePickerService _imagePickerService;
 
   PostService({
     required FeedRepository feedApi,
     required ImagePickerService imagePickerService,
-  })  : _feedApi = feedApi,
+  })  : _postRepository = feedApi,
         _imagePickerService = imagePickerService;
 
   /**
@@ -35,7 +35,7 @@ class PostService {
   Future<Result<Match>> search(String gameId) async {
     try {
       return Success(
-        (await _feedApi.search(gameId)).data!,
+        (await _postRepository.search(gameId)).data!,
       );
     } catch (e) {
       return const Failure(
@@ -47,7 +47,7 @@ class PostService {
   /**
    * 동영상 썸네일 추출 로직(유튜브 썸네일 추출은 따로 있음)
    */
-  Future<Result<Uint8List>> _getByteThumbImage(File videoFile) async {
+  Future<Result<Uint8List>> _getByteThumbnail(File videoFile) async {
     try {
       final uint8List =
           await VideoThumbnail.thumbnailData(video: videoFile.path);
@@ -102,30 +102,29 @@ class PostService {
   Future<Result<VideoUploadForm>> uploadVideo() async {
     try {
       // 1. 동영상 선택
-      return _selectVideo().then(
+      return await _selectVideo().then(
         (videoFile) => videoFile.when(
           success: (videoFile) async {
             // 2. 동영상 업로드
-            final videoUrl = await _feedApi.uploadVideo(videoFile);
-            // 3. 썸네일 추출
-            final byteThumbImage = await _getByteThumbImage(videoFile);
+            final videoUrl = await _postRepository.uploadVideo(videoFile);
 
-            return byteThumbImage.when(
+            // 3. 썸네일 추출
+            return (await _getByteThumbnail(videoFile)).when(
               // 4. 동영상 선택, 업로드, 썸네일 추출까지 성공
-              success: (byteThumbImage) => Success(VideoUploadForm(
-                videoUrl: videoUrl,
-                byteThumbImage: byteThumbImage,
-              )),
-              //
+              success: (thumbnail) => Success(
+                VideoUploadForm(videoUrl: videoUrl, thumbnail: thumbnail),
+              ),
+
               // 5. 동영상 선택, 업로드만 성공
-              failure: (err) => Success(VideoUploadForm(
-                videoUrl: videoUrl,
-                byteThumbImage: null,
-              )),
+              failure: (err) => Success(
+                VideoUploadForm(videoUrl: videoUrl, thumbnail: null),
+              ),
             );
           },
           failure: (err) {
-            return Failure(err);
+            return Failure(
+              err,
+            );
           },
         ),
       );
@@ -167,7 +166,7 @@ class PostService {
       return Success(
         VideoUploadForm(
           videoUrl: youtubeId,
-          byteThumbImage: Uint8List.fromList(
+          thumbnail: Uint8List.fromList(
             intList,
           ),
         ),
@@ -186,7 +185,7 @@ class PostService {
       String youtubeId) async {
     try {
       final HttpResponse<List<int>> thumbImageFile =
-          await _feedApi.getYoutubeThumbImage(youtubeId);
+          await _postRepository.getYoutubeThumbImage(youtubeId);
 
       return Success(thumbImageFile);
     } catch (e) {
@@ -250,7 +249,7 @@ class PostService {
         );
 
         try {
-          final feed = await _feedApi.post(feedForm);
+          final feed = await _postRepository.post(feedForm);
           return Success(
             feed.data!,
           );
@@ -280,7 +279,7 @@ class PostService {
           await thumbImageFile.writeAsBytes(byteThumbImage);
       // 4. 서버에 업로드
       final thumbImageUrl =
-          await _feedApi.uploadThumbImage(thumbImageFileWritten);
+          await _postRepository.uploadThumbImage(thumbImageFileWritten);
 
       return Success(
         thumbImageUrl,

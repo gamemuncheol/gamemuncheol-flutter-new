@@ -7,13 +7,13 @@ enum PostError implements BaseError {
   BYTE_OVER_FLOW("최대 업로드 용량은 500MB입니다."),
 
   // 동영상 선택 취소
-  VIDEO_NOT_SELECTED("선택된 동영상이 없습니다."),
+  VIDEO_NOT_SELECTED(""),
 
   // 썸네일 자동 추출 실패
   THUMB_IMAGE_INITIALIZE_FAILED(""),
 
-  // 동영상 선택 취소
-  THUMB_IMAGE_NOT_SELECTED("선택된 사진이 없습니다."),
+  // 썸네일 선택 취소
+  THUMB_IMAGE_NOT_SELECTED(""),
 
   // 지원하지 않는 파일 양식
   UNSUPPORTED_FILE("지원하지 않는 파일 양식입니다."),

@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
@@ -10,12 +12,14 @@ import 'package:gamemuncheol_upstream/feature/video/presentation/component/amazo
 
 class FullScreen extends StatelessWidget {
   final VideoPlayerController videoPlayerController;
-  final String thumbnailUrl;
+  final String? thumbnailUrl;
+  final Uint8List? thumbnailByte;
 
   const FullScreen({
     super.key,
     required this.videoPlayerController,
-    required this.thumbnailUrl,
+    this.thumbnailUrl,
+    this.thumbnailByte,
   });
 
   static const String NAME = "FULL_SCREEN";
@@ -57,6 +61,7 @@ class FullScreen extends StatelessWidget {
           child: CustomAmazonPlayer(
             videoPlayerController: videoPlayerController,
             thumbnailUrl: thumbnailUrl,
+            thumbnailByte: thumbnailByte,
           ),
         ),
       ),
