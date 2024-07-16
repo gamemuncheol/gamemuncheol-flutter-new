@@ -22,7 +22,10 @@ enum PostError implements BaseError {
   NO_SUCH_MATCH("검색 결과가 존재하지 않습니다."),
 
   // 유튜브 URL 검색 결과 없음
-  NO_SUCH_YOUTUBE_URL("존재하지 않는 유튜브 url입니다.");
+  NO_SUCH_YOUTUBE_URL("존재하지 않는 유튜브 url입니다."),
+
+  // 업로드 실패
+  POST_FAILED("업로드 실패 잠시후 다시 시도해 주세요.");
 
   const PostError(this.message);
 

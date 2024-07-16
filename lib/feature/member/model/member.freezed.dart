@@ -20,6 +20,7 @@ Member _$MemberFromJson(Map<String, dynamic> json) {
 
 /// @nodoc
 mixin _$Member {
+  int get id => throw _privateConstructorUsedError;
   String get name => throw _privateConstructorUsedError;
   String get nickname => throw _privateConstructorUsedError;
   String get email => throw _privateConstructorUsedError;
@@ -38,7 +39,8 @@ abstract class $MemberCopyWith<$Res> {
       _$MemberCopyWithImpl<$Res, Member>;
   @useResult
   $Res call(
-      {String name,
+      {int id,
+      String name,
       String nickname,
       String email,
       String picture,
@@ -59,6 +61,7 @@ class _$MemberCopyWithImpl<$Res, $Val extends Member>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
+    Object? id = null,
     Object? name = null,
     Object? nickname = null,
     Object? email = null,
@@ -67,6 +70,10 @@ class _$MemberCopyWithImpl<$Res, $Val extends Member>
     Object? score = null,
   }) {
     return _then(_value.copyWith(
+      id: null == id
+          ? _value.id
+          : id // ignore: cast_nullable_to_non_nullable
+              as int,
       name: null == name
           ? _value.name
           : name // ignore: cast_nullable_to_non_nullable
@@ -103,7 +110,8 @@ abstract class _$$MemberImplCopyWith<$Res> implements $MemberCopyWith<$Res> {
   @override
   @useResult
   $Res call(
-      {String name,
+      {int id,
+      String name,
       String nickname,
       String email,
       String picture,
@@ -122,6 +130,7 @@ class __$$MemberImplCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
+    Object? id = null,
     Object? name = null,
     Object? nickname = null,
     Object? email = null,
@@ -130,6 +139,10 @@ class __$$MemberImplCopyWithImpl<$Res>
     Object? score = null,
   }) {
     return _then(_$MemberImpl(
+      id: null == id
+          ? _value.id
+          : id // ignore: cast_nullable_to_non_nullable
+              as int,
       name: null == name
           ? _value.name
           : name // ignore: cast_nullable_to_non_nullable
@@ -162,7 +175,8 @@ class __$$MemberImplCopyWithImpl<$Res>
 @JsonSerializable()
 class _$MemberImpl implements _Member {
   const _$MemberImpl(
-      {required this.name,
+      {required this.id,
+      required this.name,
       required this.nickname,
       required this.email,
       required this.picture,
@@ -172,6 +186,8 @@ class _$MemberImpl implements _Member {
   factory _$MemberImpl.fromJson(Map<String, dynamic> json) =>
       _$$MemberImplFromJson(json);
 
+  @override
+  final int id;
   @override
   final String name;
   @override
@@ -187,7 +203,7 @@ class _$MemberImpl implements _Member {
 
   @override
   String toString() {
-    return 'Member(name: $name, nickname: $nickname, email: $email, picture: $picture, privacyAgreed: $privacyAgreed, score: $score)';
+    return 'Member(id: $id, name: $name, nickname: $nickname, email: $email, picture: $picture, privacyAgreed: $privacyAgreed, score: $score)';
   }
 
   @override
@@ -195,6 +211,7 @@ class _$MemberImpl implements _Member {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$MemberImpl &&
+            (identical(other.id, id) || other.id == id) &&
             (identical(other.name, name) || other.name == name) &&
             (identical(other.nickname, nickname) ||
                 other.nickname == nickname) &&
@@ -208,7 +225,7 @@ class _$MemberImpl implements _Member {
   @JsonKey(ignore: true)
   @override
   int get hashCode => Object.hash(
-      runtimeType, name, nickname, email, picture, privacyAgreed, score);
+      runtimeType, id, name, nickname, email, picture, privacyAgreed, score);
 
   @JsonKey(ignore: true)
   @override
@@ -226,7 +243,8 @@ class _$MemberImpl implements _Member {
 
 abstract class _Member implements Member {
   const factory _Member(
-      {required final String name,
+      {required final int id,
+      required final String name,
       required final String nickname,
       required final String email,
       required final String picture,
@@ -235,6 +253,8 @@ abstract class _Member implements Member {
 
   factory _Member.fromJson(Map<String, dynamic> json) = _$MemberImpl.fromJson;
 
+  @override
+  int get id;
   @override
   String get name;
   @override

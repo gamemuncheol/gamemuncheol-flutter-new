@@ -6,6 +6,7 @@ part 'member.freezed.dart';
 @freezed
 class Member with _$Member {
   const factory Member({
+    required int id,
     required String name,
     required String nickname,
     required String email,

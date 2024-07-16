@@ -26,7 +26,9 @@ mixin VideoUploadScreenEvent on ConsumerState<VideoUploadScreen> {
           .read(uploadVideoNotifierProvider.notifier)
           .uploadVideo()
           .then((isUploaded) {
-        context.pushNamed(PostFormScreen.NAME);
+        if (isUploaded) {
+          context.pushNamed(PostFormScreen.NAME);
+        }
       });
 
       return;

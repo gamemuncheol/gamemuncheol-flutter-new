@@ -23,6 +23,7 @@ class StakeHolderList extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return ListView.builder(
+      physics: const BouncingScrollPhysics(),
       itemCount: matchUsers.length,
       itemBuilder: (context, index) {
         final MatchSaveForm state = ref.watch(matchSaveFormNotifierProvider);

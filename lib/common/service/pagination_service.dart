@@ -6,7 +6,7 @@ import 'package:gamemuncheol_upstream/common/model/cursor_pagination.dart';
 import 'package:gamemuncheol_upstream/common/component/pagination_list_view.dart';
 
 abstract class PaginationService<T> {
-  Future<Result<CursorPagination<T>>> paginate(int page, {int size = 20});
+  Future<Result<CursorPagination<T>>> paginate(int page, {int size = 10});
 }
 
 mixin PaginationHelper on ConsumerState<PaginationListview> {

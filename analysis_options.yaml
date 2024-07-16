@@ -12,6 +12,7 @@ analyzer:
     constant_identifier_names: ignore
     non_constant_identifier_names: ignore
     slash_for_doc_comments: ignore
+    unused_result: ignore
 include: package:flutter_lints/flutter.yaml
 
 linter:

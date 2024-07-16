@@ -36,29 +36,30 @@ class _SearchMatchScreenState extends ConsumerState<SearchMatchScreen>
         onLeadingTap: onLeadingTap,
       ).toPrefferedSize(),
       expanded: PostSaveFormPadding(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            /**
-             * 헤더
-             */
-            const PostSaveFormHeader(
-              title: "전적검색을 위해 게임ID\n를 입력해 주세요.",
-              description: "명쾌하게 판단해 드려요.",
-            ),
-            Gap(80.h),
-            /**
-             * 검색창
-             */
-            SearchField(
-              search: search,
-            ),
-            Gap(30.h),
-            /**
-             * 검색결과
-             */
-            Expanded(
-              child: Consumer(
+        child: SizedBox(
+          height: MediaQuery.sizeOf(context).height,
+          child: ListView(
+            physics: const BouncingScrollPhysics(),
+            children: [
+              /**
+               * 헤더
+               */
+              const PostSaveFormHeader(
+                title: "전적검색을 위해 게임ID\n를 입력해 주세요.",
+                description: "명쾌하게 판단해 드려요.",
+              ),
+              Gap(80.h),
+              /**
+               * 검색창
+               */
+              SearchField(
+                search: search,
+              ),
+              Gap(30.h),
+              /**
+               * 검색결과
+               */
+              Consumer(
                 builder: (context, ref, child) {
                   return ref.watch(searchMatchNotifierProvider).when(
                         // 기본
@@ -83,8 +84,8 @@ class _SearchMatchScreenState extends ConsumerState<SearchMatchScreen>
                       );
                 },
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
       /**

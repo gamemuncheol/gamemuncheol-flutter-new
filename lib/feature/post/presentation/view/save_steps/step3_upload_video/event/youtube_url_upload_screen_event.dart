@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gamemuncheol_upstream/feature/post/presentation/view/save_steps/step4_post_form/screen/post_form_screen.dart';
@@ -21,9 +23,11 @@ mixin YoutubeUrlUploadScreenEvent on ConsumerState<YoutubeUrlUploadScreen> {
   Future<void> preview() async {
     context.pushNamed(
       ThumbnailSettingScreen.NAME,
-      extra: await PermissionHandlerService.checkPermission(
-        Permission.photos,
-      ),
+      extra: Platform.isAndroid
+          ? true
+          : await PermissionHandlerService.checkPermission(
+              Permission.photos,
+            ),
     );
   }
 

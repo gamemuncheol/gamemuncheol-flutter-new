@@ -15,25 +15,24 @@ class BottomButtonExpanded extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isKeyboardVisible = MediaQuery.of(context).viewInsets.bottom > 0;
+
     return Scaffold(
-      resizeToAvoidBottomInset: false,
+      resizeToAvoidBottomInset: true,
       appBar: appBar,
       backgroundColor: context.colors.background,
       body: Column(
         children: [
           Expanded(
-            child: Column(
-              children: [
-                Expanded(
-                  child: expanded,
-                ),
-              ],
+            child: expanded,
+          ),
+          Visibility(
+            visible: !isKeyboardVisible,
+            child: SafeArea(
+              top: false,
+              child: bottomButton,
             ),
-          ),
-          SafeArea(
-            top: false,
-            child: bottomButton,
-          ),
+          )
         ],
       ),
     );

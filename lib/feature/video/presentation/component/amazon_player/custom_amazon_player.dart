@@ -32,19 +32,16 @@ class CustomAmazonPlayer extends StatefulWidget {
 class _CustomAmazonPlayerState extends State<CustomAmazonPlayer>
     with SingleTickerProviderStateMixin {
   late final AnimationController aniController;
-
-  bool hideThumbnail = false;
-  bool hideProgress = true;
-  bool hidePlayButton = false;
+  final ValueNotifier<bool> hideThumbnail = ValueNotifier(false);
+  final ValueNotifier<bool> hideProgress = ValueNotifier(true);
+  final ValueNotifier<bool> hidePlayButton = ValueNotifier(false);
 
   @override
   void initState() {
     super.initState();
     aniController = AnimationController(
       vsync: this,
-      duration: const Duration(
-        milliseconds: 300,
-      ),
+      duration: const Duration(milliseconds: 300),
     )..addListener(playButtonVisibilityListener);
 
     if (widget.videoPlayerController.value.isInitialized) {
@@ -80,10 +77,8 @@ class _CustomAmazonPlayerState extends State<CustomAmazonPlayer>
   }
 
   void playButtonVisibilityListener() {
-    if (aniController.isCompleted && hideProgress && context.mounted) {
-      setState(() {
-        hidePlayButton = true;
-      });
+    if (aniController.isCompleted && hideProgress.value && context.mounted) {
+      hidePlayButton.value = true;
     }
   }
 
@@ -95,12 +90,16 @@ class _CustomAmazonPlayerState extends State<CustomAmazonPlayer>
     return GestureDetector(
       onTap: () {
         if (context.mounted) {
-          setState(() {
-            hideProgress = !hideProgress;
-            if (hideProgress == false) {
-              hidePlayButton = false;
-            }
-          });
+          hideProgress.value = !hideProgress.value;
+
+          if (!hideProgress.value) {
+            hidePlayButton.value = false;
+          }
+
+          if (hideProgress.value &&
+              widget.videoPlayerController.value.isPlaying) {
+            hidePlayButton.value = true;
+          }
         }
       },
       child: SizedBox(
@@ -108,57 +107,65 @@ class _CustomAmazonPlayerState extends State<CustomAmazonPlayer>
         height: MediaQuery.sizeOf(context).width * 9 / 16,
         child: Stack(
           children: [
-            VideoPlayer(
-              widget.videoPlayerController,
+            VideoPlayer(widget.videoPlayerController),
+            ValueListenableBuilder<bool>(
+              valueListenable: hideThumbnail,
+              builder: (context, value, child) {
+                return Visibility(
+                  visible: !value,
+                  child: Thumbnail(
+                    thumbnailUrl: widget.thumbnailUrl,
+                    thumbnailByte: widget.thumbnailByte,
+                  ),
+                );
+              },
             ),
-            Visibility(
-              visible: !hideThumbnail,
-              child: Thumbnail(
-                thumbnailUrl: widget.thumbnailUrl,
-                thumbnailByte: widget.thumbnailByte,
-              ),
+            ValueListenableBuilder<bool>(
+              valueListenable: hideProgress,
+              builder: (context, value, child) {
+                return AnimatedOpacity(
+                  opacity: value ? 0 : 0.7,
+                  duration: const Duration(milliseconds: 300),
+                  child: Container(
+                    color: context.colors.black,
+                  ),
+                );
+              },
             ),
-            AnimatedOpacity(
-              opacity: hideProgress ? 0 : 0.7,
-              duration: const Duration(
-                milliseconds: 300,
-              ),
-              child: Container(
-                color: context.colors.black,
-              ),
-            ),
-            Visibility(
-              visible: !hidePlayButton,
-              child: Align(
-                alignment: Alignment.center,
-                child: Material(
-                  color: context.colors.transParent,
-                  child: InkWell(
-                    borderRadius: BorderRadius.circular(
-                      50,
-                    ),
-                    onTap: () {
-                      if (widget.videoPlayerController.value.isInitialized) {
-                        if (!hideThumbnail) {
-                          setState(() {
-                            hideThumbnail = true;
-                          });
-                        }
+            ValueListenableBuilder<bool>(
+              valueListenable: hidePlayButton,
+              builder: (context, value, child) {
+                return Visibility(
+                  visible: !value,
+                  child: Align(
+                    alignment: Alignment.center,
+                    child: Material(
+                      color: context.colors.transParent,
+                      child: InkWell(
+                        borderRadius: BorderRadius.circular(50),
+                        onTap: () {
+                          if (widget
+                              .videoPlayerController.value.isInitialized) {
+                            if (!hideThumbnail.value) {
+                              hideThumbnail.value = true;
+                            }
 
-                        widget.videoPlayerController.value.isPlaying
-                            ? widget.videoPlayerController.pause()
-                            : widget.videoPlayerController.play();
-                      }
-                    },
-                    child: AnimatedIcon(
-                      icon: AnimatedIcons.play_pause,
-                      progress: aniController.view,
-                      color: context.colors.primaryWhite,
-                      size: isLandScapeMode ? 30.w : 60.w,
+                            widget.videoPlayerController.value.isPlaying
+                                ? widget.videoPlayerController.pause()
+                                : widget.videoPlayerController.play();
+                          }
+                        },
+                        child: AnimatedIcon(
+                          icon: AnimatedIcons.play_pause,
+                          progress: aniController.view,
+                          color: context.colors.primaryWhite,
+                          size: isLandScapeMode ? 30.w : 60.w,
+                        ),
+                      ),
                     ),
                   ),
-                ),
-              ),
+                );
+              },
             ),
             Align(
               alignment: Alignment.bottomLeft,
@@ -168,69 +175,69 @@ class _CustomAmazonPlayerState extends State<CustomAmazonPlayer>
                   right: 5,
                   bottom: 5,
                 ),
-                child: IgnorePointer(
-                  ignoring: hideProgress,
-                  child: AnimatedOpacity(
-                    opacity: hideProgress ? 0 : 1,
-                    duration: const Duration(milliseconds: 300),
-                    child: Row(
-                      children: [
-                        AmazonCurrentDuration(
-                          controller: widget.videoPlayerController,
-                        ),
-                        Gap(5.w),
-                        Expanded(
-                          child: AmazonProgressBar(
+                child: ValueListenableBuilder<bool>(
+                  valueListenable: hideProgress,
+                  builder: (context, value, child) {
+                    return AnimatedOpacity(
+                      opacity: value ? 0 : 1,
+                      duration: const Duration(milliseconds: 300),
+                      child: Row(
+                        children: [
+                          AmazonCurrentDuration(
                             controller: widget.videoPlayerController,
-                            colors: AmazonProgressBarColor(
-                              handle: context.colors.primaryGreen,
+                          ),
+                          Gap(5.w),
+                          Expanded(
+                            child: AmazonProgressBar(
+                              controller: widget.videoPlayerController,
+                              colors: AmazonProgressBarColor(
+                                handle: context.colors.primaryGreen,
+                              ),
                             ),
                           ),
-                        ),
-                        AmazonRemainingDuration(
-                          controller: widget.videoPlayerController,
-                        ),
-                        IconButton(
-                          icon: Icon(
-                            Icons.fullscreen,
-                            color: context.colors.primaryWhite,
+                          AmazonRemainingDuration(
+                            controller: widget.videoPlayerController,
                           ),
-                          onPressed: () async {
-                            if (GoRouterState.of(context).matchedLocation ==
-                                FullScreen.PATH) {
-                              if (isLandScapeMode) {
-                                SystemChrome.setPreferredOrientations([
-                                  DeviceOrientation.portraitUp,
-                                  DeviceOrientation.portraitDown,
-                                ]);
-                              } else {
-                                SystemChrome.setPreferredOrientations([
-                                  DeviceOrientation.landscapeRight,
-                                  DeviceOrientation.landscapeLeft,
-                                ]);
+                          IconButton(
+                            icon: Icon(
+                              Icons.fullscreen,
+                              color: context.colors.primaryWhite,
+                            ),
+                            onPressed: () async {
+                              if (GoRouterState.of(context).matchedLocation ==
+                                  FullScreen.PATH) {
+                                if (isLandScapeMode) {
+                                  SystemChrome.setPreferredOrientations([
+                                    DeviceOrientation.portraitUp,
+                                    DeviceOrientation.portraitDown,
+                                  ]);
+                                } else {
+                                  SystemChrome.setPreferredOrientations([
+                                    DeviceOrientation.landscapeRight,
+                                    DeviceOrientation.landscapeLeft,
+                                  ]);
+                                }
+                                return;
                               }
-
-                              return;
-                            }
-
-                            await widget.videoPlayerController
-                                .pause()
-                                .whenComplete(
-                                  () => context.push(
-                                    FullScreen.PATH,
-                                    extra: Extra({
-                                      "videoPlayerController":
-                                          widget.videoPlayerController,
-                                      "thumbnailUrl": widget.thumbnailUrl,
-                                      "thumbnailByte": widget.thumbnailByte,
-                                    }),
-                                  ),
-                                );
-                          },
-                        ),
-                      ],
-                    ),
-                  ),
+                              await widget.videoPlayerController
+                                  .pause()
+                                  .whenComplete(
+                                    () => context.push(
+                                      FullScreen.PATH,
+                                      extra: Extra({
+                                        "videoPlayerController":
+                                            widget.videoPlayerController,
+                                        "thumbnailUrl": widget.thumbnailUrl,
+                                        "thumbnailByte": widget.thumbnailByte,
+                                      }),
+                                    ),
+                                  );
+                            },
+                          ),
+                        ],
+                      ),
+                    );
+                  },
                 ),
               ),
             ),

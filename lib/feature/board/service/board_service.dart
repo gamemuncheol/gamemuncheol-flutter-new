@@ -23,7 +23,7 @@ class BoardService implements PaginationService<Post> {
 
   @override
   Future<Result<CursorPagination<Post>>> paginate(int page,
-      {int size = 5}) async {
+      {int size = 10}) async {
     try {
       final CommonResponse<CursorPagination<Post>> feed =
           await _boardRepository.pagenate(page, size: size, path: path.name);

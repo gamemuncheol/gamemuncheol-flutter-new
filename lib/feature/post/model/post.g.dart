@@ -12,8 +12,8 @@ _$PostImpl _$$PostImplFromJson(Map<String, dynamic> json) => _$PostImpl(
       videoUrl: json['videoUrl'] as String,
       thumbnailUrl: json['thumbnailUrl'] as String,
       title: json['title'] as String,
-      content: json['content'] as String?,
-      timesAgo: json['timesAgo'] as String?,
+      content: json['content'] as String,
+      timesAgo: json['timesAgo'] as String,
       viewCount: (json['viewCount'] as num).toInt(),
       voteRatio: (json['voteRatio'] as List<dynamic>)
           .map((e) => (e as num).toDouble())
@@ -31,4 +31,18 @@ Map<String, dynamic> _$$PostImplToJson(_$PostImpl instance) =>
       'timesAgo': instance.timesAgo,
       'viewCount': instance.viewCount,
       'voteRatio': instance.voteRatio,
+    };
+
+_$CommentImpl _$$CommentImplFromJson(Map<String, dynamic> json) =>
+    _$CommentImpl(
+      author: Member.fromJson(json['author'] as Map<String, dynamic>),
+      content: json['content'] as String,
+      timesAgo: json['timesAgo'] as String,
+    );
+
+Map<String, dynamic> _$$CommentImplToJson(_$CommentImpl instance) =>
+    <String, dynamic>{
+      'author': instance.author,
+      'content': instance.content,
+      'timesAgo': instance.timesAgo,
     };

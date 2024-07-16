@@ -9,6 +9,7 @@ import 'package:go_router/go_router.dart';
 
 mixin SearchMatchScreenEvent on ConsumerState<SearchMatchScreen> {
   onLeadingTap() {
+    ref.refresh(matchSaveFormNotifierProvider);
     context.pop();
   }
 

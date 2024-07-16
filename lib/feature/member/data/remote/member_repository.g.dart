@@ -6,7 +6,7 @@ part of 'member_repository.dart';
 // RetrofitGenerator
 // **************************************************************************
 
-// ignore_for_file: unnecessary_brace_in_string_interps,no_leading_underscores_for_local_identifiers
+// ignore_for_file: unnecessary_brace_in_string_interps,no_leading_underscores_for_local_identifiers,unused_element
 
 class _MemberRepositoryImplProxy implements MemberRepositoryImplProxy {
   _MemberRepositoryImplProxy(
@@ -41,11 +41,11 @@ class _MemberRepositoryImplProxy implements MemberRepositoryImplProxy {
               _dio.options.baseUrl,
               baseUrl,
             ))));
-    final value = CommonResponse<bool>.fromJson(
+    final _value = CommonResponse<bool>.fromJson(
       _result.data!,
       (json) => json as bool,
     );
-    return value;
+    return _value;
   }
 
   @override
@@ -72,11 +72,11 @@ class _MemberRepositoryImplProxy implements MemberRepositoryImplProxy {
               _dio.options.baseUrl,
               baseUrl,
             ))));
-    final value = CommonResponse<dynamic>.fromJson(
+    final _value = CommonResponse<dynamic>.fromJson(
       _result.data!,
       (json) => json as dynamic,
     );
-    return value;
+    return _value;
   }
 
   @override
@@ -103,11 +103,11 @@ class _MemberRepositoryImplProxy implements MemberRepositoryImplProxy {
               _dio.options.baseUrl,
               baseUrl,
             ))));
-    final value = CommonResponse<Member>.fromJson(
+    final _value = CommonResponse<Member>.fromJson(
       _result.data!,
       (json) => Member.fromJson(json as Map<String, dynamic>),
     );
-    return value;
+    return _value;
   }
 
   RequestOptions _setStreamType<T>(RequestOptions requestOptions) {

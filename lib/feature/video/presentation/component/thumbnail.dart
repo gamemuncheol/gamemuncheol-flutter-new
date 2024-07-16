@@ -10,26 +10,36 @@ import 'package:gamemuncheol_upstream/config/theme/extension/color_theme.dart';
 import 'package:gamemuncheol_upstream/config/theme/extension/text_style_theme.dart';
 
 class Thumbnail extends StatelessWidget {
+  final Size? size;
+
   final Uint8List? thumbnailByte;
   final String? thumbnailUrl;
 
   final VoidCallback? onPreviewTap;
 
-  const Thumbnail(
-      {super.key, this.thumbnailByte, this.thumbnailUrl, this.onPreviewTap});
+  const Thumbnail({
+    super.key,
+    this.thumbnailByte,
+    this.thumbnailUrl,
+    this.onPreviewTap,
+    this.size,
+  });
 
   factory Thumbnail.fromMemory(Uint8List? byte,
-      {required VoidCallback onPreviewTap}) {
+      {required VoidCallback onPreviewTap, Size? size}) {
     return Thumbnail(
       thumbnailByte: byte,
       onPreviewTap: onPreviewTap,
+      size: size,
     );
   }
 
-  factory Thumbnail.fromUrl(String? url, {required VoidCallback onPreviewTap}) {
+  factory Thumbnail.fromUrl(String? url,
+      {required VoidCallback onPreviewTap, Size? size}) {
     return Thumbnail(
       thumbnailUrl: url,
       onPreviewTap: onPreviewTap,
+      size: size,
     );
   }
 
@@ -38,8 +48,8 @@ class Thumbnail extends StatelessWidget {
     return Stack(
       children: [
         SizedBox(
-          width: MediaQuery.sizeOf(context).width,
-          height: MediaQuery.sizeOf(context).width * 9 / 16,
+          width: size?.width ?? MediaQuery.sizeOf(context).width,
+          height: size?.height ?? MediaQuery.sizeOf(context).width * 9 / 16,
           child: thumbnailUrl == null && thumbnailByte == null
               ? Image.asset(
                   fit: BoxFit.cover,

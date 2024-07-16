@@ -42,7 +42,7 @@ class PaginationNotifier<T, K extends PaginationService<T>>
     if (state is Initial || refresh) {
       state = Loading();
 
-      final pages = await paginationService.paginate(1);
+      final pages = await paginationService.paginate(1, size: 5);
 
       pages.when(
         success: (pages) {
@@ -67,6 +67,7 @@ class PaginationNotifier<T, K extends PaginationService<T>>
       if (rests != 0) {
         final pages = await paginationService.paginate(
           currentPage + 1,
+          size: 5,
         );
 
         pages.when(

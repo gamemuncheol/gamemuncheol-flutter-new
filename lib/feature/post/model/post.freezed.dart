@@ -25,8 +25,8 @@ mixin _$Post {
   String get videoUrl => throw _privateConstructorUsedError;
   String get thumbnailUrl => throw _privateConstructorUsedError;
   String get title => throw _privateConstructorUsedError;
-  String? get content => throw _privateConstructorUsedError;
-  String? get timesAgo => throw _privateConstructorUsedError;
+  String get content => throw _privateConstructorUsedError;
+  String get timesAgo => throw _privateConstructorUsedError;
   int get viewCount => throw _privateConstructorUsedError;
   List<double> get voteRatio => throw _privateConstructorUsedError;
 
@@ -46,8 +46,8 @@ abstract class $PostCopyWith<$Res> {
       String videoUrl,
       String thumbnailUrl,
       String title,
-      String? content,
-      String? timesAgo,
+      String content,
+      String timesAgo,
       int viewCount,
       List<double> voteRatio});
 
@@ -72,8 +72,8 @@ class _$PostCopyWithImpl<$Res, $Val extends Post>
     Object? videoUrl = null,
     Object? thumbnailUrl = null,
     Object? title = null,
-    Object? content = freezed,
-    Object? timesAgo = freezed,
+    Object? content = null,
+    Object? timesAgo = null,
     Object? viewCount = null,
     Object? voteRatio = null,
   }) {
@@ -98,14 +98,14 @@ class _$PostCopyWithImpl<$Res, $Val extends Post>
           ? _value.title
           : title // ignore: cast_nullable_to_non_nullable
               as String,
-      content: freezed == content
+      content: null == content
           ? _value.content
           : content // ignore: cast_nullable_to_non_nullable
-              as String?,
-      timesAgo: freezed == timesAgo
+              as String,
+      timesAgo: null == timesAgo
           ? _value.timesAgo
           : timesAgo // ignore: cast_nullable_to_non_nullable
-              as String?,
+              as String,
       viewCount: null == viewCount
           ? _value.viewCount
           : viewCount // ignore: cast_nullable_to_non_nullable
@@ -139,8 +139,8 @@ abstract class _$$PostImplCopyWith<$Res> implements $PostCopyWith<$Res> {
       String videoUrl,
       String thumbnailUrl,
       String title,
-      String? content,
-      String? timesAgo,
+      String content,
+      String timesAgo,
       int viewCount,
       List<double> voteRatio});
 
@@ -163,8 +163,8 @@ class __$$PostImplCopyWithImpl<$Res>
     Object? videoUrl = null,
     Object? thumbnailUrl = null,
     Object? title = null,
-    Object? content = freezed,
-    Object? timesAgo = freezed,
+    Object? content = null,
+    Object? timesAgo = null,
     Object? viewCount = null,
     Object? voteRatio = null,
   }) {
@@ -189,14 +189,14 @@ class __$$PostImplCopyWithImpl<$Res>
           ? _value.title
           : title // ignore: cast_nullable_to_non_nullable
               as String,
-      content: freezed == content
+      content: null == content
           ? _value.content
           : content // ignore: cast_nullable_to_non_nullable
-              as String?,
-      timesAgo: freezed == timesAgo
+              as String,
+      timesAgo: null == timesAgo
           ? _value.timesAgo
           : timesAgo // ignore: cast_nullable_to_non_nullable
-              as String?,
+              as String,
       viewCount: null == viewCount
           ? _value.viewCount
           : viewCount // ignore: cast_nullable_to_non_nullable
@@ -238,9 +238,9 @@ class _$PostImpl implements _Post {
   @override
   final String title;
   @override
-  final String? content;
+  final String content;
   @override
-  final String? timesAgo;
+  final String timesAgo;
   @override
   final int viewCount;
   final List<double> _voteRatio;
@@ -312,8 +312,8 @@ abstract class _Post implements Post {
       required final String videoUrl,
       required final String thumbnailUrl,
       required final String title,
-      required final String? content,
-      required final String? timesAgo,
+      required final String content,
+      required final String timesAgo,
       required final int viewCount,
       required final List<double> voteRatio}) = _$PostImpl;
 
@@ -330,9 +330,9 @@ abstract class _Post implements Post {
   @override
   String get title;
   @override
-  String? get content;
+  String get content;
   @override
-  String? get timesAgo;
+  String get timesAgo;
   @override
   int get viewCount;
   @override
@@ -340,5 +340,187 @@ abstract class _Post implements Post {
   @override
   @JsonKey(ignore: true)
   _$$PostImplCopyWith<_$PostImpl> get copyWith =>
+      throw _privateConstructorUsedError;
+}
+
+Comment _$CommentFromJson(Map<String, dynamic> json) {
+  return _Comment.fromJson(json);
+}
+
+/// @nodoc
+mixin _$Comment {
+  Member get author => throw _privateConstructorUsedError;
+  String get content => throw _privateConstructorUsedError;
+  String get timesAgo => throw _privateConstructorUsedError;
+
+  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
+  @JsonKey(ignore: true)
+  $CommentCopyWith<Comment> get copyWith => throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class $CommentCopyWith<$Res> {
+  factory $CommentCopyWith(Comment value, $Res Function(Comment) then) =
+      _$CommentCopyWithImpl<$Res, Comment>;
+  @useResult
+  $Res call({Member author, String content, String timesAgo});
+
+  $MemberCopyWith<$Res> get author;
+}
+
+/// @nodoc
+class _$CommentCopyWithImpl<$Res, $Val extends Comment>
+    implements $CommentCopyWith<$Res> {
+  _$CommentCopyWithImpl(this._value, this._then);
+
+  // ignore: unused_field
+  final $Val _value;
+  // ignore: unused_field
+  final $Res Function($Val) _then;
+
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? author = null,
+    Object? content = null,
+    Object? timesAgo = null,
+  }) {
+    return _then(_value.copyWith(
+      author: null == author
+          ? _value.author
+          : author // ignore: cast_nullable_to_non_nullable
+              as Member,
+      content: null == content
+          ? _value.content
+          : content // ignore: cast_nullable_to_non_nullable
+              as String,
+      timesAgo: null == timesAgo
+          ? _value.timesAgo
+          : timesAgo // ignore: cast_nullable_to_non_nullable
+              as String,
+    ) as $Val);
+  }
+
+  @override
+  @pragma('vm:prefer-inline')
+  $MemberCopyWith<$Res> get author {
+    return $MemberCopyWith<$Res>(_value.author, (value) {
+      return _then(_value.copyWith(author: value) as $Val);
+    });
+  }
+}
+
+/// @nodoc
+abstract class _$$CommentImplCopyWith<$Res> implements $CommentCopyWith<$Res> {
+  factory _$$CommentImplCopyWith(
+          _$CommentImpl value, $Res Function(_$CommentImpl) then) =
+      __$$CommentImplCopyWithImpl<$Res>;
+  @override
+  @useResult
+  $Res call({Member author, String content, String timesAgo});
+
+  @override
+  $MemberCopyWith<$Res> get author;
+}
+
+/// @nodoc
+class __$$CommentImplCopyWithImpl<$Res>
+    extends _$CommentCopyWithImpl<$Res, _$CommentImpl>
+    implements _$$CommentImplCopyWith<$Res> {
+  __$$CommentImplCopyWithImpl(
+      _$CommentImpl _value, $Res Function(_$CommentImpl) _then)
+      : super(_value, _then);
+
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? author = null,
+    Object? content = null,
+    Object? timesAgo = null,
+  }) {
+    return _then(_$CommentImpl(
+      author: null == author
+          ? _value.author
+          : author // ignore: cast_nullable_to_non_nullable
+              as Member,
+      content: null == content
+          ? _value.content
+          : content // ignore: cast_nullable_to_non_nullable
+              as String,
+      timesAgo: null == timesAgo
+          ? _value.timesAgo
+          : timesAgo // ignore: cast_nullable_to_non_nullable
+              as String,
+    ));
+  }
+}
+
+/// @nodoc
+@JsonSerializable()
+class _$CommentImpl implements _Comment {
+  const _$CommentImpl(
+      {required this.author, required this.content, required this.timesAgo});
+
+  factory _$CommentImpl.fromJson(Map<String, dynamic> json) =>
+      _$$CommentImplFromJson(json);
+
+  @override
+  final Member author;
+  @override
+  final String content;
+  @override
+  final String timesAgo;
+
+  @override
+  String toString() {
+    return 'Comment(author: $author, content: $content, timesAgo: $timesAgo)';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$CommentImpl &&
+            (identical(other.author, author) || other.author == author) &&
+            (identical(other.content, content) || other.content == content) &&
+            (identical(other.timesAgo, timesAgo) ||
+                other.timesAgo == timesAgo));
+  }
+
+  @JsonKey(ignore: true)
+  @override
+  int get hashCode => Object.hash(runtimeType, author, content, timesAgo);
+
+  @JsonKey(ignore: true)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$CommentImplCopyWith<_$CommentImpl> get copyWith =>
+      __$$CommentImplCopyWithImpl<_$CommentImpl>(this, _$identity);
+
+  @override
+  Map<String, dynamic> toJson() {
+    return _$$CommentImplToJson(
+      this,
+    );
+  }
+}
+
+abstract class _Comment implements Comment {
+  const factory _Comment(
+      {required final Member author,
+      required final String content,
+      required final String timesAgo}) = _$CommentImpl;
+
+  factory _Comment.fromJson(Map<String, dynamic> json) = _$CommentImpl.fromJson;
+
+  @override
+  Member get author;
+  @override
+  String get content;
+  @override
+  String get timesAgo;
+  @override
+  @JsonKey(ignore: true)
+  _$$CommentImplCopyWith<_$CommentImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }
