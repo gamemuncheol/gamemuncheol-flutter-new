@@ -130,7 +130,7 @@ GoRouter goRouter(
       GoRoute(
         path: SearchMatchScreen.PATH,
         name: SearchMatchScreen.NAME,
-        builder: (context, state) => const VideoUploadScreen(),
+        builder: (context, state) => const SearchMatchScreen(),
         routes: [
           GoRoute(
             path: SelectStakeHolderScreen.PATH,

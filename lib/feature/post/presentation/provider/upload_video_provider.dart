@@ -3,7 +3,7 @@ import 'package:gamemuncheol_upstream/common/provider/base_notifier.dart';
 import 'package:gamemuncheol_upstream/config/di/di_setup_passive.dart';
 import 'package:gamemuncheol_upstream/core/resource/base_state.dart';
 import 'package:gamemuncheol_upstream/feature/post/model/form/video_upload_form.dart';
-import 'package:gamemuncheol_upstream/feature/post/service/feed_service.dart';
+import 'package:gamemuncheol_upstream/feature/post/service/post_service.dart';
 
 final uploadVideoNotifierProvider =
     NotifierProvider<UploadVideoNotifier, BaseState<VideoUploadForm>>(() {

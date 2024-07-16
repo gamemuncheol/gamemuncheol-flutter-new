@@ -6,7 +6,7 @@ part of 'feed_repository.dart';
 // RetrofitGenerator
 // **************************************************************************
 
-// ignore_for_file: unnecessary_brace_in_string_interps,no_leading_underscores_for_local_identifiers
+// ignore_for_file: unnecessary_brace_in_string_interps,no_leading_underscores_for_local_identifiers,unused_element
 
 class _FeedRepositoryImplProxy implements FeedRepositoryImplProxy {
   _FeedRepositoryImplProxy(
@@ -42,11 +42,11 @@ class _FeedRepositoryImplProxy implements FeedRepositoryImplProxy {
               _dio.options.baseUrl,
               baseUrl,
             ))));
-    final value = CommonResponse<Match>.fromJson(
+    final _value = CommonResponse<Match>.fromJson(
       _result.data!,
       (json) => Match.fromJson(json as Map<String, dynamic>),
     );
-    return value;
+    return _value;
   }
 
   @override
@@ -76,8 +76,8 @@ class _FeedRepositoryImplProxy implements FeedRepositoryImplProxy {
               _dio.options.baseUrl,
               baseUrl,
             ))));
-    final value = _result.data!.cast<int>();
-    final httpResponse = HttpResponse(value, _result);
+    final _value = _result.data!.cast<int>();
+    final httpResponse = HttpResponse(_value, _result);
     return httpResponse;
   }
 
@@ -112,8 +112,8 @@ class _FeedRepositoryImplProxy implements FeedRepositoryImplProxy {
           _dio.options.baseUrl,
           baseUrl,
         ))));
-    final value = _result.data!;
-    return value;
+    final _value = _result.data!;
+    return _value;
   }
 
   @override
@@ -148,12 +148,12 @@ class _FeedRepositoryImplProxy implements FeedRepositoryImplProxy {
           _dio.options.baseUrl,
           baseUrl,
         ))));
-    final value = _result.data!;
-    return value;
+    final _value = _result.data!;
+    return _value;
   }
 
   @override
-  Future<CommonResponse<Post>> post(PostSaveForm feedForm) async {
+  Future<CommonResponse<dynamic>> post(PostSaveForm feedForm) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{
@@ -163,7 +163,7 @@ class _FeedRepositoryImplProxy implements FeedRepositoryImplProxy {
     _headers.removeWhere((k, v) => v == null);
     final _data = feedForm;
     final _result = await _dio.fetch<Map<String, dynamic>>(
-        _setStreamType<CommonResponse<Post>>(Options(
+        _setStreamType<CommonResponse<dynamic>>(Options(
       method: 'POST',
       headers: _headers,
       extra: _extra,
@@ -180,11 +180,11 @@ class _FeedRepositoryImplProxy implements FeedRepositoryImplProxy {
               _dio.options.baseUrl,
               baseUrl,
             ))));
-    final value = CommonResponse<Post>.fromJson(
+    final _value = CommonResponse<dynamic>.fromJson(
       _result.data!,
-      (json) => Post.fromJson(json as Map<String, dynamic>),
+      (json) => json as dynamic,
     );
-    return value;
+    return _value;
   }
 
   RequestOptions _setStreamType<T>(RequestOptions requestOptions) {

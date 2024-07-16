@@ -10,6 +10,7 @@ class SystemUtil {
         SystemUiOverlay.bottom,
       ],
     );
+    portraitUp();
   }
 
   static void setWhiteThemeSystemUiMode() {

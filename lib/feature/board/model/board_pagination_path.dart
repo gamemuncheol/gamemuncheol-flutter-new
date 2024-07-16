@@ -2,7 +2,8 @@
 
 enum BoardPaginationPath {
   NEW("new"),
-  HOT("not");
+  HOT("hot"),
+  GRILL("grill");
 
   final String name;
   const BoardPaginationPath(this.name);

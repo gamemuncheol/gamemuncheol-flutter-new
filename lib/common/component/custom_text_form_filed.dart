@@ -12,6 +12,7 @@ typedef CounterBuilder = Widget? Function(
 
 class CustomTextFormField extends StatelessWidget {
   final TextEditingController? textEditingController;
+  final void Function(PointerDownEvent)? onTapOutside;
   final String? Function(String?)? validator;
   final CounterBuilder? counterBuilder;
   final bool isUnderLineTextFormField;
@@ -27,6 +28,7 @@ class CustomTextFormField extends StatelessWidget {
   const CustomTextFormField({
     super.key,
     this.textEditingController,
+    this.onTapOutside,
     this.validator,
     this.counterBuilder,
     this.isUnderLineTextFormField = false,
@@ -57,11 +59,13 @@ class CustomTextFormField extends StatelessWidget {
         BorderSide(color: context.colors.errorRed);
 
     return TextFormField(
+      autofocus: false,
       key: fieldKey,
       controller: textEditingController,
+      onTapOutside: onTapOutside,
       onTap: () {
         if (fieldKey != null) {
-          Scrollable.ensureVisible(fieldKey!.currentContext!);
+          // Scrollable.ensureVisible(fieldKey!.currentContext!);
         }
       },
       validator: validator,

@@ -8,11 +8,9 @@ import 'package:video_thumbnail/video_thumbnail.dart';
 
 import 'package:gamemuncheol_upstream/common/service/image_picker/image_picker_service.dart';
 import 'package:gamemuncheol_upstream/common/util/url_util.dart';
-import 'package:gamemuncheol_upstream/core/resource/base_error.dart';
 import 'package:gamemuncheol_upstream/core/resource/media_model.dart';
 import 'package:gamemuncheol_upstream/core/resource/result.dart';
 import 'package:gamemuncheol_upstream/feature/post/data/remote/feed_repository.dart';
-import 'package:gamemuncheol_upstream/feature/post/model/post.dart';
 import 'package:gamemuncheol_upstream/feature/post/model/form/post_save_form.dart';
 import 'package:gamemuncheol_upstream/feature/post/model/match.dart';
 import 'package:gamemuncheol_upstream/feature/post/model/post_error.dart';
@@ -75,13 +73,13 @@ class PostService {
       final MediaModel? mediaModel =
           await _imagePickerService.pickVideoFromGallery(maxByte: 500);
 
-      // 2. 아무것도 선택하지 않은 경우 FeedError 리턴
+      // 2. 아무것도 선택하지 않은 경우 PostError 리턴
       if (mediaModel == null) {
         return const Failure(
           PostError.VIDEO_NOT_SELECTED,
         );
 
-        // 3. 선택은 했는데 용량이 커서 담을 수 없는 경우도 FeedError 리턴
+        // 3. 선택은 했는데 용량이 커서 담을 수 없는 경우도 PostError 리턴
       } else if (mediaModel.file == null) {
         return const Failure(
           PostError.BYTE_OVER_FLOW,
@@ -141,6 +139,7 @@ class PostService {
   Future<Result<VideoUploadForm>> enterYoutubeUrl(String youtubeUrl) async {
     // 1. URL -> ID로 변환
     final String? youtubeId = UrlUtil.urlToYoutubeId(youtubeUrl);
+
     // 2. ID가 없으면 FeedError 반환
     if (youtubeId == null) {
       return const Failure(
@@ -165,7 +164,7 @@ class PostService {
 
       return Success(
         VideoUploadForm(
-          videoUrl: youtubeId,
+          videoUrl: youtubeUrl,
           thumbnail: Uint8List.fromList(
             intList,
           ),
@@ -224,43 +223,31 @@ class PostService {
   /**
    * 피드 업로드 로직
    */
-  Future<Result<Post>> post({
-    required String videoUrl,
+  Future<Result<void>> post({
+    required PostSaveForm form,
     required Uint8List thumbImageFile,
-    required String title,
-    required String content,
-    required List<int> matchUserIds,
-    required List<String> tags,
   }) async {
-    // 1. 썸네일 파일 먼저 업로드해서 URL 받고,
-    final Result<String> thumbImageUrl =
-        await _uploadThumbImage(thumbImageFile);
+    final Result<String> thumbnailUrl = await _uploadThumbImage(thumbImageFile);
 
-    return thumbImageUrl.when(
-      success: (thumbImageUrl) async {
-        // 2. BODY로 보낼 FeedForm 객체 생성
-        final feedForm = PostSaveForm(
-          videoUrl: videoUrl,
-          thumbnailUrl: thumbImageUrl,
-          title: title,
-          content: content,
-          matchUserIds: matchUserIds,
-          tags: tags,
+    return thumbnailUrl.when(
+      success: (thumbnailUrl) async {
+        final newForm = form.copyWith(
+          thumbnailUrl: thumbnailUrl,
         );
 
         try {
-          final feed = await _postRepository.post(feedForm);
-          return Success(
-            feed.data!,
+          await _postRepository.post(newForm);
+          return const Success(
+            null,
           );
-        } catch (e) {
+        } catch (err) {
           return const Failure(
-            CommonError.UN_KNOWN,
+            PostError.POST_FAILED,
           );
         }
       },
-      failure: (e) {
-        return Failure(e);
+      failure: (err) {
+        return Failure(err);
       },
     );
   }

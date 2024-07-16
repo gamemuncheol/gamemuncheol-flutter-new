@@ -13,11 +13,23 @@ class Post with _$Post {
     required String videoUrl,
     required String thumbnailUrl,
     required String title,
-    required String? content,
-    required String? timesAgo,
+    required String content,
+    required String timesAgo,
     required int viewCount,
     required List<double> voteRatio,
   }) = _Post;
 
   factory Post.fromJson(Map<String, dynamic> json) => _$PostFromJson(json);
+}
+
+@freezed
+class Comment with _$Comment {
+  const factory Comment({
+    required Member author,
+    required String content,
+    required String timesAgo,
+  }) = _Comment;
+
+  factory Comment.fromJson(Map<String, dynamic> json) =>
+      _$CommentFromJson(json);
 }

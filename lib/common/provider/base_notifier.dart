@@ -17,7 +17,12 @@ class BaseNotifier<T> extends Notifier<BaseState<T>> {
     final Result<T> result = await action();
 
     result.when(
-        success: (data) => state = Value(valueOrNull: data),
-        failure: (err) => state = Error(error: err));
+      success: (data) => state = Value(
+        valueOrNull: data,
+      ),
+      failure: (err) => state = Error(
+        error: err,
+      ),
+    );
   }
 }

@@ -6,7 +6,6 @@ import 'package:injectable/injectable.dart';
 import 'package:retrofit/retrofit.dart';
 
 import 'package:gamemuncheol_upstream/common/model/common_response.dart';
-import 'package:gamemuncheol_upstream/feature/post/model/post.dart';
 import 'package:gamemuncheol_upstream/feature/post/model/form/post_save_form.dart';
 import 'package:gamemuncheol_upstream/feature/post/model/match.dart';
 
@@ -17,7 +16,7 @@ abstract class FeedRepository {
   Future<HttpResponse<List<int>>> getYoutubeThumbImage(String youtubeId);
   Future<String> uploadVideo(File videoFile);
   Future<String> uploadThumbImage(File thumbImageFile);
-  Future<CommonResponse<Post>> post(PostSaveForm feedForm);
+  Future<CommonResponse> post(PostSaveForm feedForm);
 }
 
 @LazySingleton(as: FeedRepository)
@@ -111,7 +110,7 @@ class FeedRepositoryImpl implements FeedRepository {
   }
 
   @override
-  Future<CommonResponse<Post>> post(PostSaveForm feedForm) {
+  Future<CommonResponse> post(PostSaveForm feedForm) {
     return _retrofit.post(feedForm);
   }
 }
@@ -153,5 +152,5 @@ abstract class FeedRepositoryImplProxy implements FeedRepository {
   @override
   @Headers({"accessToken": "true", "Content-Type": "application/json"})
   @POST("/api/posts")
-  Future<CommonResponse<Post>> post(@Body() PostSaveForm feedForm);
+  Future<CommonResponse> post(@Body() PostSaveForm feedForm);
 }

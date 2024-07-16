@@ -27,6 +27,7 @@ mixin SocialAuthScreenEvent on ConsumerState<SocialAuthScreen> {
       // 1. 도중 로그인 중단 시 홈으로(가지고 온 데이터가 없는 경우)
       if (value == null) {
         context.pop();
+        return;
       }
 
       final TokenResponse tokenResponse = value as TokenResponse;

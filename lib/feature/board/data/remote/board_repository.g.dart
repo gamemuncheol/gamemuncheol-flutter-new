@@ -6,7 +6,7 @@ part of 'board_repository.dart';
 // RetrofitGenerator
 // **************************************************************************
 
-// ignore_for_file: unnecessary_brace_in_string_interps,no_leading_underscores_for_local_identifiers
+// ignore_for_file: unnecessary_brace_in_string_interps,no_leading_underscores_for_local_identifiers,unused_element
 
 class _BoardRepositoryImpl implements BoardRepositoryImpl {
   _BoardRepositoryImpl(
@@ -48,14 +48,14 @@ class _BoardRepositoryImpl implements BoardRepositoryImpl {
               _dio.options.baseUrl,
               baseUrl,
             ))));
-    final value = CommonResponse<CursorPagination<Post>>.fromJson(
+    final _value = CommonResponse<CursorPagination<Post>>.fromJson(
       _result.data!,
       (json) => CursorPagination<Post>.fromJson(
         json as Map<String, dynamic>,
         (json) => Post.fromJson(json as Map<String, dynamic>),
       ),
     );
-    return value;
+    return _value;
   }
 
   RequestOptions _setStreamType<T>(RequestOptions requestOptions) {

@@ -8,7 +8,12 @@ class PostSaveFormPadding extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.fromLTRB(16.w, 36.h, 16.w, 0.h),
+      padding: EdgeInsets.fromLTRB(
+        16.w,
+        36.h,
+        16.w,
+        0.h,
+      ),
       child: child,
     );
   }

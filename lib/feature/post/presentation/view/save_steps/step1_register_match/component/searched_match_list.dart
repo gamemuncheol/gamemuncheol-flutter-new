@@ -35,45 +35,43 @@ class SearchedMatchList extends ConsumerWidget {
           ],
         ),
         Gap(10.h),
-        Expanded(
-          child: ListView.builder(
-            itemCount: match.matchUsers.length,
-            itemBuilder: (context, index) {
-              final MatchSaveForm state =
-                  ref.watch(matchSaveFormNotifierProvider);
+        ...List.generate(
+          match.matchUsers.length,
+          (index) {
+            final MatchSaveForm state =
+                ref.watch(matchSaveFormNotifierProvider);
 
-              final MatchUser matchUser = match.matchUsers[index];
-              final bool isMySelf = matchUser == state.me;
+            final MatchUser matchUser = match.matchUsers[index];
+            final bool isMySelf = matchUser == state.me;
 
-              return Padding(
-                padding: EdgeInsets.symmetric(
-                  vertical: 10.h,
-                ),
-                child: GestureDetector(
-                  onTap: () => updateMe(matchUser),
-                  child: Container(
-                    color: context.colors.background,
-                    child: Row(
-                      children: [
-                        SvgPicture.asset(
-                          isMySelf
-                              ? AppAsset.CHECKBOX_FILLED
-                              : AppAsset.CHECKBOX_BLANK,
+            return Padding(
+              padding: EdgeInsets.symmetric(
+                vertical: 10.h,
+              ),
+              child: GestureDetector(
+                onTap: () => updateMe(matchUser),
+                child: Container(
+                  color: context.colors.background,
+                  child: Row(
+                    children: [
+                      SvgPicture.asset(
+                        isMySelf
+                            ? AppAsset.CHECKBOX_FILLED
+                            : AppAsset.CHECKBOX_BLANK,
+                      ),
+                      Gap(15.w),
+                      Expanded(
+                        child: MatchCard.fullInfo(
+                          matchUser: match.matchUsers[index],
+                          gameCreation: match.gameCreation,
                         ),
-                        Gap(15.w),
-                        Expanded(
-                          child: MatchCard.fullInfo(
-                            matchUser: match.matchUsers[index],
-                            gameCreation: match.gameCreation,
-                          ),
-                        ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
                 ),
-              );
-            },
-          ),
+              ),
+            );
+          },
         ),
       ],
     );

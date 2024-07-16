@@ -7,6 +7,7 @@ part of 'member.dart';
 // **************************************************************************
 
 _$MemberImpl _$$MemberImplFromJson(Map<String, dynamic> json) => _$MemberImpl(
+      id: (json['id'] as num).toInt(),
       name: json['name'] as String,
       nickname: json['nickname'] as String,
       email: json['email'] as String,
@@ -17,6 +18,7 @@ _$MemberImpl _$$MemberImplFromJson(Map<String, dynamic> json) => _$MemberImpl(
 
 Map<String, dynamic> _$$MemberImplToJson(_$MemberImpl instance) =>
     <String, dynamic>{
+      'id': instance.id,
       'name': instance.name,
       'nickname': instance.nickname,
       'email': instance.email,

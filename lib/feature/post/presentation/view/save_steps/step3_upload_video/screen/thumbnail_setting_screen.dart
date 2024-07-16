@@ -35,7 +35,7 @@ class ThumbnailSettingScreen extends ConsumerStatefulWidget {
 
 class _ThumbnailSettingScreenState
     extends ConsumerState<ThumbnailSettingScreen> {
-  late final VideoPlayerController videoPlayerController;
+  late VideoPlayerController videoPlayerController;
   late final hasPermission = ValueNotifier(widget.hasPermission);
 
   @override
